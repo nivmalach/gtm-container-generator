@@ -67,29 +67,29 @@ app.get('/generate', (req, res) => {
           const getParam = key => f.parameter?.find(p => p.key === key);
 
           // GA_Event - hostname
-          if (tr.name === 'GA_Event' && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Hostname') && triggerGAHost) {
+          if (tr.name.includes('GA_Event') && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Hostname') && triggerGAHost) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
           }
 
           // Home Page / Home Page - Windows+FF – URL does not contain
-          if (tr.name === 'Home Page' && triggerHomePage && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
+          if (tr.name.includes('Home Page') && triggerHomePage && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerHomePage } : p));
           }
-          if (tr.name === 'Home Page - Windows+FF' && triggerHomeExclude && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
+          if (tr.name.includes('Home Page - Windows+FF') && triggerHomeExclude && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerHomeExclude } : p));
           }
 
           // TYP / TYP - Windows+FF – URL contains
-          if (tr.name === 'TYP' && (triggerTYP || triggerTYPUrl) && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
+          if (tr.name.includes('TYP') && (triggerTYP || triggerTYPUrl) && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             const val = triggerTYP || triggerTYPUrl;
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
           }
-          if (tr.name === 'TYP - Windows+FF' && triggerTYPUrl && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
+          if (tr.name.includes('TYP - Windows+FF') && triggerTYPUrl && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerTYPUrl } : p));
           }
 
           // Pronto – URL contains
-          if (tr.name === 'Pronto' && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL') && triggerPronto) {
+          if (tr.name.includes('Pronto') && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL') && triggerPronto) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerPronto } : p));
           }
 
@@ -99,31 +99,38 @@ app.get('/generate', (req, res) => {
               ? f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: newVal } : p))
               : f.parameter;
 
-          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path')) {
+          if (tr.name.includes('Landing Pages - Windows+FF') && triggerLandingPath && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerLandingPath } : p));
           }
-          if (tr.name === 'Landing Pages' && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
+          if (tr.name.includes('Landing Pages') && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
 
-          if (tr.name === 'Click on Download - Main - Windows+FF' && triggerClickMain && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Main - Windows+FF') && triggerClickMain && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickMain } : p));
           }
-          if (tr.name === 'Click on Download - Header' && triggerClickHeader && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Header') && triggerClickHeader && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickHeader } : p));
           }
-          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Header - Windows+FF') && triggerClickHeaderWin && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickHeaderWin } : p));
           }
-          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Footer - Windows+FF') && triggerClickFooterWin && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickFooterWin } : p));
           }
-          if (tr.name === 'Click on Download - Footer' && triggerClickFooter && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Footer') && triggerClickFooter && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickFooter } : p));
           }
-          if (tr.name === 'Click on Download - Indicator' && triggerClickIndicator && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Indicator') && triggerClickIndicator && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickIndicator } : p));
           }
-          if (tr.name === 'Click on Download - Main' && triggerClickMainAlt && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name.includes('Click on Download - Main') && triggerClickMainAlt && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickMainAlt } : p));
+          }
+
+          // Preserve negate key if present
+          if (f.negate !== undefined) {
+            const negateValue = f.negate;
+            f.parameter = f.parameter.map(p => p);
+            f.negate = negateValue;
           }
 
           return f;
