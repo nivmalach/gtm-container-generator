@@ -43,49 +43,47 @@
         </section>
         <section class="column">
           <h2>Triggers</h2>
-          <div class="form-group">
-            <label for="triggerGAHost">GA_Event – Hostname:</label>
-            <input type="text" id="triggerGAHost" name="triggerGAHost">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerHome">Home Page (both) – URL to exclude (Pronto):</label>
-            <input type="text" id="triggerHome" name="triggerHome">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerLanding">Landing Pages (both) – Page Path:</label>
-            <input type="text" id="triggerLanding" name="triggerLanding">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerTYP">TYP (both) – Page URL:</label>
-            <input type="text" id="triggerTYP" name="triggerTYP">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerClickMain">Click on Download - Main (all) – eventAction:</label>
-            <input type="text" id="triggerClickMain" name="triggerClickMain">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerClickHeader">Click on Download - Header (all) – eventAction:</label>
-            <input type="text" id="triggerClickHeader" name="triggerClickHeader">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerClickFooter">Click on Download - Footer (all) – eventAction:</label>
-            <input type="text" id="triggerClickFooter" name="triggerClickFooter">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerClickIndicator">Click on Download - Indicator – eventAction:</label>
-            <input type="text" id="triggerClickIndicator" name="triggerClickIndicator">
-          </div>
-
-          <div class="form-group">
-            <label for="triggerPronto">Pronto – Page URL:</label>
-            <input type="text" id="triggerPronto" name="triggerPronto">
+          <div class="trigger-columns">
+            <div class="column">
+              <div class="form-group">
+                <label for="triggerGAHost">GA_Event – Hostname:</label>
+                <input type="text" id="triggerGAHost" name="triggerGAHost">
+              </div>
+              <div class="form-group">
+                <label for="triggerHome">Home Page (both) – URL to exclude (Pronto):</label>
+                <input type="text" id="triggerHome" name="triggerHome">
+              </div>
+              <div class="form-group">
+                <label for="triggerLanding">Landing Pages (both) – Page Path:</label>
+                <input type="text" id="triggerLanding" name="triggerLanding">
+              </div>
+              <div class="form-group">
+                <label for="triggerTYP">TYP (both) – Page URL:</label>
+                <input type="text" id="triggerTYP" name="triggerTYP">
+              </div>
+              <div class="form-group">
+                <label for="triggerClickMain">Click on Download - Main (all) – eventAction:</label>
+                <input type="text" id="triggerClickMain" name="triggerClickMain">
+              </div>
+            </div>
+            <div class="column">
+              <div class="form-group">
+                <label for="triggerClickHeader">Click on Download - Header (all) – eventAction:</label>
+                <input type="text" id="triggerClickHeader" name="triggerClickHeader">
+              </div>
+              <div class="form-group">
+                <label for="triggerClickFooter">Click on Download - Footer (all) – eventAction:</label>
+                <input type="text" id="triggerClickFooter" name="triggerClickFooter">
+              </div>
+              <div class="form-group">
+                <label for="triggerClickIndicator">Click on Download - Indicator – eventAction:</label>
+                <input type="text" id="triggerClickIndicator" name="triggerClickIndicator">
+              </div>
+              <div class="form-group">
+                <label for="triggerPronto">Pronto – Page URL:</label>
+                <input type="text" id="triggerPronto" name="triggerPronto">
+              </div>
+            </div>
           </div>
         </section>
         <section class="column">
@@ -101,7 +99,9 @@
           </div>
         </section>
       </div>
-      <button type="submit" aria-label="Download GTM container">Download Container</button>
+      <div class="form-actions">
+        <button type="submit" aria-label="Download GTM container">Download Container</button>
+      </div>
     </form>
   </div>
 
