@@ -6,12 +6,10 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Basic Auth middleware
 const basicAuth = (req, res, next) => {
   const auth = req.headers.authorization;
   const expected = 'Basic ' + Buffer.from('admin:opsotools').toString('base64');
   if (auth === expected) return next();
-
   res.setHeader('WWW-Authenticate', 'Basic realm="Opsotools"');
   res.status(401).send('Authentication required.');
 };
@@ -64,43 +62,51 @@ app.get('/generate', (req, res) => {
         return t;
       }),
       trigger: (templateData.containerVersion.trigger || []).map(tr => {
-        const updateFilter = (field, value, match) => {
-          tr.filter = tr.filter.map(f => {
-            const isTarget = f.parameter?.some(p => p.key === 'arg0' && p.value.includes(field));
-            if (isTarget) {
-              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: match(value) } : p));
+        tr.filter = (tr.filter || []).map(f => {
+          const getParam = key => f.parameter?.find(p => p.key === key);
+
+          // GA_Event - hostname
+          if (tr.name === 'GA_Event' && getParam('arg0')?.value === 'hostname' && triggerGAHost) {
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
+          }
+
+          // Home Page / Home Page - Windows+FF – URL does not contain
+          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && getParam('arg0')?.value === 'url') {
+            const replacement = tr.name === 'Home Page' ? triggerHomePage : triggerHomeExclude;
+            if (replacement) {
+              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: replacement } : p));
             }
-            return f;
-          });
-        };
+          }
 
-        const matchEq = v => v;
-        const matchRegex = v => `^(?!.*${v}).*$`;
+          // TYP / TYP - Windows+FF – URL contains
+          if ((tr.name === 'TYP' || tr.name === 'TYP - Windows+FF') && getParam('arg0')?.value === 'url' && (triggerTYP || triggerTYPUrl)) {
+            const val = tr.name === 'TYP' ? triggerTYP : triggerTYPUrl;
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
+          }
 
-        if (tr.name === 'GA_Event' && triggerGAHost) updateFilter('hostname', triggerGAHost, matchEq);
-        if (tr.name === 'Home Page - Windows+FF' && triggerHomeExclude) updateFilter('url', triggerHomeExclude, matchRegex);
-        if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) updateFilter('Page Path', triggerLandingPath, matchEq);
-        if (tr.name === 'TYP - Windows+FF' && triggerTYPUrl) updateFilter('url', triggerTYPUrl, matchEq);
+          // Pronto – URL contains
+          if (tr.name === 'Pronto' && getParam('arg0')?.value === 'url' && triggerPronto) {
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerPronto } : p));
+          }
 
-        if (tr.name === 'Click on Download - Main - Windows+FF' && triggerClickMain)
-          updateFilter('eventAction', triggerClickMain, matchEq);
-        if (tr.name === 'Click on Download - Header' && triggerClickHeader)
-          updateFilter('eventAction', triggerClickHeader, matchEq);
-        if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin)
-          updateFilter('eventAction', triggerClickHeaderWin, matchEq);
-        if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin)
-          updateFilter('eventAction', triggerClickFooterWin, matchEq);
-        if (tr.name === 'Click on Download - Footer' && triggerClickFooter)
-          updateFilter('eventAction', triggerClickFooter, matchEq);
-        if (tr.name === 'Click on Download - Indicator' && triggerClickIndicator)
-          updateFilter('eventAction', triggerClickIndicator, matchEq);
+          // Page Path & eventAction mappings
+          const matchArg1 = (fieldVal, newVal) =>
+            f.parameter?.some(p => p.key === 'arg0' && p.value === fieldVal)
+              ? f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: newVal } : p))
+              : f.parameter;
 
-        if (tr.name === 'Home Page' && triggerHomePage) updateFilter('Page Path', triggerHomePage, matchEq);
-        if (tr.name === 'Landing Pages' && triggerLanding) updateFilter('Page Path', triggerLanding, matchEq);
-        if (tr.name === 'Pronto' && triggerPronto) updateFilter('url', triggerPronto, matchEq);
-        if (tr.name === 'Click on Download - Main' && triggerClickMainAlt) updateFilter('eventAction', triggerClickMainAlt, matchEq);
-        if (tr.name === 'TYP' && triggerTYP) updateFilter('url', triggerTYP, matchEq);
+          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) f.parameter = matchArg1('Page Path', triggerLandingPath);
+          if (tr.name === 'Landing Pages' && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
+          if (tr.name === 'Click on Download - Main - Windows+FF' && triggerClickMain) f.parameter = matchArg1('eventAction', triggerClickMain);
+          if (tr.name === 'Click on Download - Header' && triggerClickHeader) f.parameter = matchArg1('eventAction', triggerClickHeader);
+          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin) f.parameter = matchArg1('eventAction', triggerClickHeaderWin);
+          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin) f.parameter = matchArg1('eventAction', triggerClickFooterWin);
+          if (tr.name === 'Click on Download - Footer' && triggerClickFooter) f.parameter = matchArg1('eventAction', triggerClickFooter);
+          if (tr.name === 'Click on Download - Indicator' && triggerClickIndicator) f.parameter = matchArg1('eventAction', triggerClickIndicator);
+          if (tr.name === 'Click on Download - Main' && triggerClickMainAlt) f.parameter = matchArg1('eventAction', triggerClickMainAlt);
 
+          return f;
+        });
         return tr;
       })
     }
