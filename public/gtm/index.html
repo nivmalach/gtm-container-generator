@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/gtm/">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Opsotools – GTM Generator</title>
@@ -14,8 +15,8 @@
     <h2>Choose Template</h2>
     <label for="template">Select Template:</label>
     <select id="template" name="template" required>
-      <option value="Firefox-Google-Container.json">Firefox</option>
-      <option value="Chrome-Google-Container.json">Chrome</option>
+      <option value="Firefox-Google-Container.json">Firefox (Google)</option>
+      <option value="Chrome-Google-Container.json">Chrome (Google)</option>
     </select><br><br>
 
     <!-- Variables Section -->
@@ -37,22 +38,62 @@
     <label for="labelTYP">Conversion Label – TYP:</label>
     <input type="text" id="labelTYP" name="labelTYP"><br><br>
 
+    <!-- Triggers Section -->
+    <h2>Triggers</h2>
+
+    <label for="triggerGAHost">GA_Event – Hostname Filter:</label>
+    <input type="text" id="triggerGAHost" name="triggerGAHost"><br><br>
+
+    <label for="triggerHomeExclude">Home Page - Windows+FF – Exclude URL (e.g. pronto):</label>
+    <input type="text" id="triggerHomeExclude" name="triggerHomeExclude"><br><br>
+
+    <label for="triggerLandingPath">Landing Pages - Windows+FF – Page Path:</label>
+    <input type="text" id="triggerLandingPath" name="triggerLandingPath"><br><br>
+
+    <label for="triggerTYPUrl">TYP - Windows+FF – Page URL:</label>
+    <input type="text" id="triggerTYPUrl" name="triggerTYPUrl"><br><br>
+
+    <label for="triggerClickMain">Click on Download - Main - Windows+FF – eventAction:</label>
+    <input type="text" id="triggerClickMain" name="triggerClickMain"><br><br>
+
+    <label for="triggerClickHeader">Click on Download - Header – eventAction:</label>
+    <input type="text" id="triggerClickHeader" name="triggerClickHeader"><br><br>
+
+    <label for="triggerClickHeaderWin">Click on Download - Header - Windows+FF – eventAction:</label>
+    <input type="text" id="triggerClickHeaderWin" name="triggerClickHeaderWin"><br><br>
+
+    <label for="triggerClickFooterWin">Click on Download - Footer - Windows+FF – eventAction:</label>
+    <input type="text" id="triggerClickFooterWin" name="triggerClickFooterWin"><br><br>
+
+    <label for="triggerClickFooter">Click on Download - Footer – eventAction:</label>
+    <input type="text" id="triggerClickFooter" name="triggerClickFooter"><br><br>
+
+    <label for="triggerClickIndicator">Click on Download - Indicator – eventAction:</label>
+    <input type="text" id="triggerClickIndicator" name="triggerClickIndicator"><br><br>
+
+    <label for="triggerHomePage">Home Page – Page Path:</label>
+    <input type="text" id="triggerHomePage" name="triggerHomePage"><br><br>
+
+    <label for="triggerLanding">Landing Pages – Page Path:</label>
+    <input type="text" id="triggerLanding" name="triggerLanding"><br><br>
+
+    <label for="triggerPronto">Pronto – Page URL:</label>
+    <input type="text" id="triggerPronto" name="triggerPronto"><br><br>
+
+    <label for="triggerClickMainAlt">Click on Download - Main – eventAction:</label>
+    <input type="text" id="triggerClickMainAlt" name="triggerClickMainAlt"><br><br>
+
+    <label for="triggerTYP">TYP – Page URL:</label>
+    <input type="text" id="triggerTYP" name="triggerTYP"><br><br>
+
     <button type="submit">Download Container</button>
   </form>
 
   <script>
     document.getElementById('form').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const template = document.getElementById('template').value;
-      const ga4 = document.getElementById('ga4').value;
-      const ads = document.getElementById('ads').value;
-      const labelDownload = document.getElementById('labelDownload').value;
-      const labelLPView = document.getElementById('labelLPView').value;
-      const labelTYP = document.getElementById('labelTYP').value;
-
-      const params = new URLSearchParams({
-        template, ga4, ads, labelDownload, labelLPView, labelTYP
-      });
+      const data = new FormData(e.target);
+      const params = new URLSearchParams([...data.entries()]);
 
       const response = await fetch(`../generate?${params.toString()}`);
       if (!response.ok) {
