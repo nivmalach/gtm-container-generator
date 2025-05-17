@@ -1,72 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>GTM Container Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opsotools – Smarter Marketing Utilities</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #111;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    img {
+      max-width: 600px;
+      width: 90%;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    a.button:hover {
+      background: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>GTM Container Generator</h1>
-
-  <form id="form">
-    <label for="template">Select Template:</label>
-    <select id="template" name="template" required>
-      <option value="">Loading templates...</option>
-    </select>
-    <br><br>
-
-    <label for="ga4">GA4 Measurement ID:</label>
-    <input type="text" id="ga4" name="ga4" required>
-    <br><br>
-
-    <label for="ads">Google Ads Conversion ID:</label>
-    <input type="text" id="ads" name="ads" required>
-    <br><br>
-
-    <button type="submit">Download Container</button>
-  </form>
-
-  <script>
-    // Fetch available templates and populate the dropdown
-    fetch('/templates')
-      .then(res => res.json())
-      .then(templates => {
-        const select = document.getElementById('template');
-        select.innerHTML = ''; // Clear "Loading..." message
-        templates.forEach(template => {
-          const option = document.createElement('option');
-          option.value = template;
-          option.textContent = template.replace('.json', '').replace(/-/g, ' ');
-          select.appendChild(option);
-        });
-      })
-      .catch(() => {
-        alert("❌ Failed to load templates.");
-      });
-
-    // Handle form submission
-    document.getElementById('form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const template = document.getElementById('template').value;
-      const ga4 = document.getElementById('ga4').value;
-      const ads = document.getElementById('ads').value;
-
-      const response = await fetch(`/generate?template=${encodeURIComponent(template)}&ga4=${ga4}&ads=${ads}`);
-      
-      if (!response.ok) {
-        alert("Error: " + (await response.text()));
-        return;
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'modified-gtm-container.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    });
-  </script>
+  <h1>Welcome to Opsotools</h1>
+  <p>Smarter tools for growth, analytics, and marketing operations.</p>
+  <img src="https://source.unsplash.com/featured/?tools,technology" alt="Tools illustration" />
+  <br>
+  <a class="button" href="/gtm">Try GTM Generator →</a>
 </body>
 </html>

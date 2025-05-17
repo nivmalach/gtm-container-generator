@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GTM Container Generator</title>
+</head>
+<body>
+  <h1>GTM Container Generator</h1>
+
+  <form id="form">
+    <label for="template">Select Template:</label>
+    <select id="template" name="template" required>
+      <option value="">Loading templates...</option>
+    </select>
+    <br><br>
+
+    <label for="ga4">GA4 Measurement ID:</label>
+    <input type="text" id="ga4" name="ga4" required>
+    <br><br>
+
+    <label for="ads">Google Ads Conversion ID:</label>
+    <input type="text" id="ads" name="ads" required>
+    <br><br>
+
+    <button type="submit">Download Container</button>
+  </form>
+
+  <script>
+    // Fetch available templates and populate the dropdown
+    fetch('/templates')
+      .then(res => res.json())
+      .then(templates => {
+        const select = document.getElementById('template');
+        select.innerHTML = ''; // Clear "Loading..." message
+        templates.forEach(template => {
+          const option = document.createElement('option');
+          option.value = template;
+          option.textContent = template.replace('.json', '').replace(/-/g, ' ');
+          select.appendChild(option);
+        });
+      })
+      .catch(() => {
+        alert("❌ Failed to load templates.");
+      });
+
+    // Handle form submission
+    document.getElementById('form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const template = document.getElementById('template').value;
+      const ga4 = document.getElementById('ga4').value;
+      const ads = document.getElementById('ads').value;
+
+      const response = await fetch(`/generate?template=${encodeURIComponent(template)}&ga4=${ga4}&ads=${ads}`);
+      
+      if (!response.ok) {
+        alert("Error: " + (await response.text()));
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'modified-gtm-container.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+  </script>
+</body>
+</html>
