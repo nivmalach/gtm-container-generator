@@ -64,6 +64,11 @@ app.get('/generate', (req, res) => {
       }),
       trigger: (templateData.containerVersion.trigger || []).map(tr => {
         tr.filter = (tr.filter || []).map(f => {
+          const getArgVal = key => f.parameter?.find(p => p.key === key)?.value;
+          const setArgVal = (key, newVal) => {
+            f.parameter = f.parameter.map(p => p.key === key ? { ...p, value: newVal } : p);
+          };
+
           const unwrapVal = val => val?.replace(/[{}]/g, '').trim();
 
           // GA_Event - hostname
@@ -73,11 +78,8 @@ app.get('/generate', (req, res) => {
 
           // Home Page (fixed)
           if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomeExclude) {
-            const arg0Param = f.parameter.find(x => x.key === 'arg0');
-            if (arg0Param && unwrap(arg0Param.value) === 'Page URL') {
-              f.parameter = f.parameter.map(p =>
-                p.key === 'arg1' ? { ...p, value: triggerHomeExclude } : p
-              );
+            if (unwrapVal(getArgVal('arg0')) === 'Page URL') {
+              setArgVal('arg1', triggerHomeExclude);
               console.log(`→ Updated ${tr.name} arg1 to`, triggerHomeExclude);
             }
           }
@@ -108,11 +110,8 @@ app.get('/generate', (req, res) => {
 
           // Landing Pages - Windows+FF (fixed)
           if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) {
-            const arg0Param = f.parameter.find(x => x.key === 'arg0');
-            if (arg0Param && unwrap(arg0Param.value) === 'Page Path') {
-              f.parameter = f.parameter.map(p =>
-                p.key === 'arg1' ? { ...p, value: triggerLandingPath } : p
-              );
+            if (unwrapVal(getArgVal('arg0')) === 'Page Path') {
+              setArgVal('arg1', triggerLandingPath);
               console.log(`→ Updated ${tr.name} arg1 to`, triggerLandingPath);
             }
           }
@@ -143,20 +142,14 @@ app.get('/generate', (req, res) => {
             );
           }
           if (tr.name.includes('Click on Download - Header - Windows+FF') && triggerClickHeaderWin) {
-            const arg0Param = f.parameter.find(x => x.key === 'arg0');
-            if (arg0Param && unwrap(arg0Param.value) === 'eventAction') {
-              f.parameter = f.parameter.map(p =>
-                p.key === 'arg1' ? { ...p, value: triggerClickHeaderWin } : p
-              );
+            if (unwrapVal(getArgVal('arg0')) === 'eventAction') {
+              setArgVal('arg1', triggerClickHeaderWin);
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickHeaderWin);
             }
           }
           if (tr.name.includes('Click on Download - Footer - Windows+FF') && triggerClickFooterWin) {
-            const arg0Param = f.parameter.find(x => x.key === 'arg0');
-            if (arg0Param && unwrap(arg0Param.value) === 'eventAction') {
-              f.parameter = f.parameter.map(p =>
-                p.key === 'arg1' ? { ...p, value: triggerClickFooterWin } : p
-              );
+            if (unwrapVal(getArgVal('arg0')) === 'eventAction') {
+              setArgVal('arg1', triggerClickFooterWin);
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickFooterWin);
             }
           }
