@@ -1,68 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GTM Container Generator</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .flex-sections {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .column {
-      flex: 1;
-      min-width: 0;
-    }
-    form > button {
-      display: block;
-      margin: 2rem auto 0 auto;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <form id="gtm-form">
-      <div class="flex-sections">
-        <section class="column">
-          <h2>Tags</h2>
-          <label for="labelDownload">Label Download</label>
-          <input type="text" id="labelDownload" name="labelDownload" />
-
-          <label for="labelLPView">Label LP View</label>
-          <input type="text" id="labelLPView" name="labelLPView" />
-
-          <label for="labelTYP">Label TYP</label>
-          <input type="text" id="labelTYP" name="labelTYP" />
-        </section>
-
-        <section class="column">
-          <h2>Triggers</h2>
-          <label for="triggerDownload">Trigger Download</label>
-          <input type="text" id="triggerDownload" name="triggerDownload" />
-
-          <label for="triggerLPView">Trigger LP View</label>
-          <input type="text" id="triggerLPView" name="triggerLPView" />
-
-          <label for="triggerTYP">Trigger TYP</label>
-          <input type="text" id="triggerTYP" name="triggerTYP" />
-
-          <label for="triggerGA4">Trigger GA4</label>
-          <input type="text" id="triggerGA4" name="triggerGA4" />
-        </section>
-
-        <section class="column">
-          <h2>Variables</h2>
-          <label for="ga4ID">GA4 ID</label>
-          <input type="text" id="ga4ID" name="ga4ID" />
-
-          <label for="adsConversionID">Ads Conversion ID</label>
-          <input type="text" id="adsConversionID" name="adsConversionID" />
-        </section>
-      </div>
-      <button type="submit">Generate Container</button>
-    </form>
-  </div>
-</body>
-</html>
+.flex-sections {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.column {
+  flex: 1;
+  min-width: 0;
+}
+form > button {
+  display: block;
+  margin: 2rem auto 0 auto;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.25rem;
+}
