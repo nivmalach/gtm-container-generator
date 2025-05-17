@@ -1,58 +1,60 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>GTM Container Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opsotools – GTM Generator</title>
 </head>
 <body>
   <h1>GTM Container Generator</h1>
 
   <form id="form">
+    <!-- Template Selector -->
+    <h2>Choose Template</h2>
     <label for="template">Select Template:</label>
     <select id="template" name="template" required>
-      <option value="">Loading templates...</option>
-    </select>
-    <br><br>
+      <option value="Firefox-Google-Container.json">Firefox</option>
+      <option value="Chrome-Google-Container.json">Chrome</option>
+    </select><br><br>
 
+    <!-- Variables Section -->
+    <h2>Variables</h2>
     <label for="ga4">GA4 Measurement ID:</label>
-    <input type="text" id="ga4" name="ga4" required>
-    <br><br>
+    <input type="text" id="ga4" name="ga4" required><br><br>
 
     <label for="ads">Google Ads Conversion ID:</label>
-    <input type="text" id="ads" name="ads" required>
-    <br><br>
+    <input type="text" id="ads" name="ads" required><br><br>
+
+    <!-- Tags Section -->
+    <h2>Tags</h2>
+    <label for="labelDownload">Conversion Label – Click on Download:</label>
+    <input type="text" id="labelDownload" name="labelDownload"><br><br>
+
+    <label for="labelLPView">Conversion Label – LP View:</label>
+    <input type="text" id="labelLPView" name="labelLPView"><br><br>
+
+    <label for="labelTYP">Conversion Label – TYP:</label>
+    <input type="text" id="labelTYP" name="labelTYP"><br><br>
 
     <button type="submit">Download Container</button>
   </form>
 
   <script>
-    // Fetch available templates and populate the dropdown
-    fetch('/templates')
-      .then(res => res.json())
-      .then(templates => {
-        const select = document.getElementById('template');
-        select.innerHTML = ''; // Clear "Loading..." message
-        templates.forEach(template => {
-          const option = document.createElement('option');
-          option.value = template;
-          option.textContent = template.replace('.json', '').replace(/-/g, ' ');
-          select.appendChild(option);
-        });
-      })
-      .catch(() => {
-        alert("❌ Failed to load templates.");
-      });
-
-    // Handle form submission
     document.getElementById('form').addEventListener('submit', async function(e) {
       e.preventDefault();
-
       const template = document.getElementById('template').value;
       const ga4 = document.getElementById('ga4').value;
       const ads = document.getElementById('ads').value;
+      const labelDownload = document.getElementById('labelDownload').value;
+      const labelLPView = document.getElementById('labelLPView').value;
+      const labelTYP = document.getElementById('labelTYP').value;
 
-      const response = await fetch(`/generate?template=${encodeURIComponent(template)}&ga4=${ga4}&ads=${ads}`);
-      
+      const params = new URLSearchParams({
+        template, ga4, ads, labelDownload, labelLPView, labelTYP
+      });
+
+      const response = await fetch(`../generate?${params.toString()}`);
       if (!response.ok) {
         alert("Error: " + (await response.text()));
         return;
