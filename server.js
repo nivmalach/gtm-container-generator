@@ -72,7 +72,7 @@ app.get('/generate', (req, res) => {
           }
 
           // Home Page / Home Page - Windows+FF – URL does not contain
-          if (tr.name.includes('Home Page') && triggerHomePage && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
+          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomePage && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL' && f.type === 'CONTAINS' && f.negate === true)) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerHomePage } : p));
           }
           if (tr.name.includes('Home Page - Windows+FF') && triggerHomeExclude && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
@@ -104,7 +104,7 @@ app.get('/generate', (req, res) => {
           }
           if (tr.name.includes('Landing Pages') && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
 
-          if (tr.name.includes('Click on Download - Main - Windows+FF') && triggerClickMain && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
+          if (tr.name === 'Click on Download - Main' && triggerClickMain && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === '{{eventAction}}' && f.type === 'EQUALS')) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerClickMain } : p));
           }
           if (tr.name.includes('Click on Download - Header') && triggerClickHeader && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
@@ -135,6 +135,7 @@ app.get('/generate', (req, res) => {
 
           return f;
         });
+        console.log(`Processed trigger: ${tr.name}`);
         return tr;
       })
     }
