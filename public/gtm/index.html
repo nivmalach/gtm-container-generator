@@ -5,11 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Opsotools – GTM Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1>GTM Container Generator</h1>
 
-  <form id="form">
+  <div class="container">
+    <form id="form">
     <!-- Template Selector -->
     <h2>Choose Template</h2>
     <label for="template">Select Template:</label>
@@ -69,6 +72,7 @@
 
     <button type="submit">Download Container</button>
   </form>
+  </div>
 
   <script>
     document.getElementById('form').addEventListener('submit', async function(e) {
