@@ -99,7 +99,9 @@ app.get('/generate', (req, res) => {
               ? f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: newVal } : p))
               : f.parameter;
 
-          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) f.parameter = matchArg1('Page Path', triggerLandingPath);
+          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path')) {
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerLandingPath } : p));
+          }
           if (tr.name === 'Landing Pages' && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
 
           if (tr.name === 'Click on Download - Main - Windows+FF' && triggerClickMain && f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction')) {
