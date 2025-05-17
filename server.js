@@ -62,138 +62,41 @@ app.get('/generate', (req, res) => {
         }
         return t;
       }),
-      trigger: (templateData.containerVersion.trigger || []).map(tr => {
-        tr.filter = (tr.filter || []).map(f => {
-          const getArgVal = key => f.parameter?.find(p => p.key === key)?.value;
-          const setArgVal = (key, newVal) => {
-            f.parameter = f.parameter.map(p => p.key === key ? { ...p, value: newVal } : p);
-          };
-
-          const unwrapVal = val => val?.replace(/[{}]/g, '').trim();
-
-          // GA_Event - hostname
-          if (tr.name.includes('GA_Event') && f.parameter?.some(p => p.key === 'arg0' && unwrapVal(p.value) === 'Page Hostname') && triggerGAHost) {
-            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
-          }
-
-          // Home Page
-          if (tr.name === 'Home Page' && triggerHomeExclude) {
-            if (unwrap(getArgVal('arg0')) === 'Page URL') {
-              setArgVal('arg1', triggerHomeExclude);
-              console.log(`✅ Updated ${tr.name} arg1 to`, triggerHomeExclude);
-            }
-          }
-          // Home Page - Windows+FF
-          if (tr.name === 'Home Page - Windows+FF' && triggerHomeExclude) {
-            if (unwrap(getArgVal('arg0')) === 'Page URL') {
-              setArgVal('arg1', triggerHomeExclude);
-              console.log(`✅ Updated ${tr.name} arg1 to`, triggerHomeExclude);
-            }
-          }
-
-          // TYP / TYP - Windows+FF – URL contains
-          if (tr.name.includes('TYP - Windows+FF') && (triggerTYPUrl || triggerTYP)) {
-            const val = triggerTYPUrl || triggerTYP;
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== val) {
-              target.value = val;
-              console.log(`→ Updated ${tr.name} arg1 to`, val);
-            }
-          }
-          if (tr.name.includes('TYP') && !(tr.name.includes('TYP - Windows+FF'))) {
-            if (triggerTYPUrl || triggerTYP) {
-              const val = triggerTYPUrl || triggerTYP;
-              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
-              f.negate = f.negate;
-            }
-          }
-
-          // Pronto – URL contains
-          if (tr.name.includes('Pronto') && triggerPronto && f.parameter?.some(p => p.key === 'arg0' && unwrapVal(p.value) === 'Page URL')) {
-            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerPronto } : p));
-            f.negate = f.negate;
-          }
-
-          // Landing Pages - Windows+FF
-          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) {
-            if (unwrap(getArgVal('arg0')) === 'Page Path') {
-              setArgVal('arg1', triggerLandingPath);
-              console.log(`✅ Updated ${tr.name} arg1 to`, triggerLandingPath);
-            }
-          }
-          if (tr.name.includes('Landing Pages') && !tr.name.includes('Landing Pages - Windows+FF') && triggerLanding) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerLanding) {
-              target.value = triggerLanding;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerLanding);
-            }
-          }
-
-          // Click on Download triggers - eventAction filters
-          if (tr.name.includes('Click on Download - Main - Windows+FF') && triggerClickMainAlt) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerClickMainAlt) {
-              target.value = triggerClickMainAlt;
-              console.log(`→ Updated ${tr.name} eventAction to`, triggerClickMainAlt);
-            }
-          }
-          // Click on Download - Main (fixed)
-          if (tr.name.includes('Click on Download - Main') && triggerClickMain) {
-            const arg0Val = unwrapVal(getArgVal('arg0'));
-            if (arg0Val === 'eventAction' && getArgVal('arg1') !== triggerClickMain) {
-              setArgVal('arg1', triggerClickMain);
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerClickMain);
-            }
-          }
-          // Click on Download - Header - Windows+FF
-          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin) {
-            if (unwrap(getArgVal('arg0')) === 'eventAction') {
-              setArgVal('arg1', triggerClickHeaderWin);
-              console.log(`✅ Updated ${tr.name} arg1 to`, triggerClickHeaderWin);
-            }
-          }
-          // Click on Download - Footer - Windows+FF
-          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin) {
-            if (unwrap(getArgVal('arg0')) === 'eventAction') {
-              setArgVal('arg1', triggerClickFooterWin);
-              console.log(`✅ Updated ${tr.name} arg1 to`, triggerClickFooterWin);
-            }
-          }
-          if (tr.name.includes('Click on Download - Header') && !tr.name.includes('Windows+FF') && triggerClickHeader) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerClickHeader) {
-              target.value = triggerClickHeader;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerClickHeader);
-            }
-          }
-          if (tr.name.includes('Click on Download - Footer') && !tr.name.includes('Windows+FF') && triggerClickFooter) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerClickFooter) {
-              target.value = triggerClickFooter;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerClickFooter);
-            }
-          }
-          if (tr.name.includes('Click on Download - Indicator') && triggerClickIndicator) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerClickIndicator) {
-              target.value = triggerClickIndicator;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerClickIndicator);
-            }
-          }
-
-          return f;
-        });
-        console.log(`Processed trigger: ${tr.name}`);
-        return tr;
-      })
     }
   };
+
+  // Map of trigger display names to the corresponding user-provided values
+  const triggerValueMap = {
+    'Home Page': triggerHomeExclude,
+    'Home Page - Windows+FF': triggerHomeExclude,
+    'Landing Pages - Windows+FF': triggerLandingPath,
+    'Click on Download - Main': triggerClickMain,
+    'Click on Download - Main - Windows+FF': triggerClickMainAlt,
+    'Click on Download - Header': triggerClickHeader,
+    'Click on Download - Header - Windows+FF': triggerClickHeaderWin,
+    'Click on Download - Footer': triggerClickFooter,
+    'Click on Download - Footer - Windows+FF': triggerClickFooterWin,
+    'TYP': triggerTYP || triggerTYPUrl,
+    'TYP - Windows+FF': triggerTYPUrl || triggerTYP,
+    'Pronto': triggerPronto
+  };
+
+  const updatedTriggers = (templateData.containerVersion.trigger || []).map(tr => {
+    const newVal = triggerValueMap[tr.name];
+    if (newVal) {
+      tr.filter = (tr.filter || []).map(f => {
+        if (f.parameter && f.parameter.length >= 2) {
+          // Always update the second parameter's value
+          f.parameter[1].value = newVal;
+        }
+        return f;
+      });
+      console.log(`→ Updated ${tr.name} arg1 to`, newVal);
+    }
+    return tr;
+  });
+
+  newContainer.containerVersion.trigger = updatedTriggers;
 
   const outputDir = path.join('/tmp', 'exported_containers');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
