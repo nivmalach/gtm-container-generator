@@ -1,53 +1,68 @@
-body {
-  font-family: 'Inter', sans-serif;
-  background: #f9fafb;
-  color: #333;
-  line-height: 1.6;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GTM Container Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .flex-sections {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .column {
+      flex: 1;
+      min-width: 0;
+    }
+    form > button {
+      display: block;
+      margin: 2rem auto 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="gtm-form">
+      <div class="flex-sections">
+        <section class="column">
+          <h2>Tags</h2>
+          <label for="labelDownload">Label Download</label>
+          <input type="text" id="labelDownload" name="labelDownload" />
 
-.container {
-  max-width: 700px;
-  margin: 4rem auto;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+          <label for="labelLPView">Label LP View</label>
+          <input type="text" id="labelLPView" name="labelLPView" />
 
-label {
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
+          <label for="labelTYP">Label TYP</label>
+          <input type="text" id="labelTYP" name="labelTYP" />
+        </section>
 
-input[type="text"] {
-  width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
+        <section class="column">
+          <h2>Triggers</h2>
+          <label for="triggerDownload">Trigger Download</label>
+          <input type="text" id="triggerDownload" name="triggerDownload" />
 
-button {
-  background: #0077ff;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 1rem;
-}
+          <label for="triggerLPView">Trigger LP View</label>
+          <input type="text" id="triggerLPView" name="triggerLPView" />
 
-button:hover {
-  background: #005ec4;
-}
+          <label for="triggerTYP">Trigger TYP</label>
+          <input type="text" id="triggerTYP" name="triggerTYP" />
 
-h2 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.25rem;
-}
+          <label for="triggerGA4">Trigger GA4</label>
+          <input type="text" id="triggerGA4" name="triggerGA4" />
+        </section>
+
+        <section class="column">
+          <h2>Variables</h2>
+          <label for="ga4ID">GA4 ID</label>
+          <input type="text" id="ga4ID" name="ga4ID" />
+
+          <label for="adsConversionID">Ads Conversion ID</label>
+          <input type="text" id="adsConversionID" name="adsConversionID" />
+        </section>
+      </div>
+      <button type="submit">Generate Container</button>
+    </form>
+  </div>
+</body>
+</html>
