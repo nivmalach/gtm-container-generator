@@ -72,21 +72,13 @@ app.get('/generate', (req, res) => {
           }
 
           // Home Page (fixed)
-          if (tr.name === 'Home Page' && triggerHomeExclude) {
-            f.parameter = f.parameter.map(p =>
-              p.key === 'arg1' && unwrap(f.parameter.find(x => x.key === 'arg0')?.value) === 'Page URL'
-                ? { ...p, value: triggerHomeExclude }
-                : p
-            );
-          }
-
-          // Home Page - Windows+FF (fixed)
-          if (tr.name === 'Home Page - Windows+FF' && triggerHomeExclude) {
-            f.parameter = f.parameter.map(p =>
-              p.key === 'arg1' && unwrap(f.parameter.find(x => x.key === 'arg0')?.value) === 'Page URL'
-                ? { ...p, value: triggerHomeExclude }
-                : p
-            );
+          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomeExclude) {
+            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL');
+            const target = f.parameter?.find(p => p.key === 'arg1');
+            if (match && target && target.value !== triggerHomeExclude) {
+              target.value = triggerHomeExclude;
+              console.log(`→ Updated ${tr.name} Page URL arg1 to`, triggerHomeExclude);
+            }
           }
 
           // TYP / TYP - Windows+FF – URL contains
@@ -115,11 +107,12 @@ app.get('/generate', (req, res) => {
 
           // Landing Pages - Windows+FF (fixed)
           if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) {
-            f.parameter = f.parameter.map(p =>
-              p.key === 'arg1' && unwrap(f.parameter.find(x => x.key === 'arg0')?.value) === 'Page Path'
-                ? { ...p, value: triggerLandingPath }
-                : p
-            );
+            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path');
+            const target = f.parameter?.find(p => p.key === 'arg1');
+            if (match && target && target.value !== triggerLandingPath) {
+              target.value = triggerLandingPath;
+              console.log(`→ Updated ${tr.name} Page Path arg1 to`, triggerLandingPath);
+            }
           }
           if (tr.name.includes('Landing Pages') && !tr.name.includes('Landing Pages - Windows+FF') && triggerLanding) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page Path');
@@ -148,11 +141,12 @@ app.get('/generate', (req, res) => {
             );
           }
           if (tr.name.includes('Click on Download - Header - Windows+FF') && triggerClickHeaderWin) {
-            f.parameter = f.parameter.map(p =>
-              p.key === 'arg1' && unwrap(f.parameter.find(x => x.key === 'arg0')?.value) === 'eventAction'
-                ? { ...p, value: triggerClickHeaderWin }
-                : p
-            );
+            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
+            const target = f.parameter?.find(p => p.key === 'arg1');
+            if (match && target && target.value !== triggerClickHeaderWin) {
+              target.value = triggerClickHeaderWin;
+              console.log(`→ Updated ${tr.name} eventAction arg1 to`, triggerClickHeaderWin);
+            }
           }
           if (tr.name.includes('Click on Download - Footer - Windows+FF') && triggerClickFooterWin) {
             f.parameter = f.parameter.map(p =>
