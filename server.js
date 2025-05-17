@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -40,6 +39,8 @@ app.get('/generate', (req, res) => {
     return res.status(500).send('Template load failed: ' + err.message);
   }
 
+  const unwrap = val => val?.replace(/[{}]/g, '').trim();
+
   const newContainer = {
     ...templateData,
     containerVersion: {
@@ -63,35 +64,41 @@ app.get('/generate', (req, res) => {
       }),
       trigger: (templateData.containerVersion.trigger || []).map(tr => {
         tr.filter = (tr.filter || []).map(f => {
-          const getParam = key => f.parameter?.find(p => p.key === key);
-
           // GA_Event - hostname
-          if (tr.name === 'GA_Event' && getParam('arg0')?.value === 'hostname' && triggerGAHost) {
+          if (tr.name === 'GA_Event' &&
+              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Hostname') &&
+              triggerGAHost) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
           }
 
-          // Home Page / Home Page - Windows+FF – URL does not contain
-          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && getParam('arg0')?.value === 'url') {
+          // Home Page + Home Page - Windows+FF
+          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') &&
+              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             const replacement = tr.name === 'Home Page' ? triggerHomePage : triggerHomeExclude;
             if (replacement) {
               f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: replacement } : p));
             }
           }
 
-          // TYP / TYP - Windows+FF – URL contains
-          if ((tr.name === 'TYP' || tr.name === 'TYP - Windows+FF') && getParam('arg0')?.value === 'url' && (triggerTYP || triggerTYPUrl)) {
+          // TYP + TYP - Windows+FF
+          if ((tr.name === 'TYP' || tr.name === 'TYP - Windows+FF') &&
+              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
             const val = tr.name === 'TYP' ? triggerTYP : triggerTYPUrl;
-            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
+            if (val) {
+              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
+            }
           }
 
-          // Pronto – URL contains
-          if (tr.name === 'Pronto' && getParam('arg0')?.value === 'url' && triggerPronto) {
+          // Pronto
+          if (tr.name === 'Pronto' &&
+              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL') &&
+              triggerPronto) {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerPronto } : p));
           }
 
-          // Page Path & eventAction mappings
+          // General pattern for Page Path / eventAction
           const matchArg1 = (fieldVal, newVal) =>
-            f.parameter?.some(p => p.key === 'arg0' && p.value === fieldVal)
+            f.parameter?.some(p => unwrap(p.value) === fieldVal)
               ? f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: newVal } : p))
               : f.parameter;
 
@@ -126,4 +133,3 @@ app.get('/generate', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-// force update
