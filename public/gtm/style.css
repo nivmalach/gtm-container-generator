@@ -86,3 +86,13 @@ h2 {
   text-align: center;
   margin-top: 2rem;
 }
+
+.watermark {
+  position: fixed;
+  bottom: 12px;
+  left: 16px;
+  font-size: 0.75rem;
+  color: #888;
+  font-family: 'Inter', sans-serif;
+  z-index: 100;
+}
