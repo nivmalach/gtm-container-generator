@@ -20,11 +20,10 @@ app.get('/generate', (req, res) => {
   const {
     template, ga4, ads,
     labelDownload, labelLPView, labelTYP,
-    triggerGAHost, triggerHomeExclude, triggerLandingPath,
-    triggerTYPUrl, triggerClickMain, triggerClickHeader,
-    triggerClickHeaderWin, triggerClickFooterWin, triggerClickFooter,
-    triggerClickIndicator, triggerHomePage, triggerLanding,
-    triggerPronto, triggerClickMainAlt, triggerTYP
+    triggerHome, triggerLanding,
+    triggerTYP, triggerClickMain,
+    triggerClickHeader, triggerClickFooter,
+    triggerClickIndicator, triggerPronto
   } = req.query;
 
   if (!template) return res.status(400).send('Missing template selection');
@@ -67,26 +66,23 @@ app.get('/generate', (req, res) => {
           // GA_Event - hostname
           if (tr.name === 'GA_Event' &&
               f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page Hostname') &&
-              triggerGAHost) {
-            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
+              triggerHome) {
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerHome } : p));
           }
 
           // Home Page + Home Page - Windows+FF
           if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') &&
               f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
-            const replacement = tr.name === 'Home Page' ? triggerHomePage : triggerHomeExclude;
-            if (replacement) {
-              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: replacement } : p));
+            if (triggerHome) {
+              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerHome } : p));
             }
           }
 
           // TYP + TYP - Windows+FF
           if ((tr.name === 'TYP' || tr.name === 'TYP - Windows+FF') &&
-              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL')) {
-            const val = tr.name === 'TYP' ? triggerTYP : triggerTYPUrl;
-            if (val) {
-              f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: val } : p));
-            }
+              f.parameter?.some(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL') &&
+              triggerTYP) {
+            f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerTYP } : p));
           }
 
           // Pronto
@@ -102,15 +98,11 @@ app.get('/generate', (req, res) => {
               ? f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: newVal } : p))
               : f.parameter;
 
-          if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) f.parameter = matchArg1('Page Path', triggerLandingPath);
-          if (tr.name === 'Landing Pages' && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
-          if (tr.name === 'Click on Download - Main - Windows+FF' && triggerClickMain) f.parameter = matchArg1('eventAction', triggerClickMain);
-          if (tr.name === 'Click on Download - Header' && triggerClickHeader) f.parameter = matchArg1('eventAction', triggerClickHeader);
-          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin) f.parameter = matchArg1('eventAction', triggerClickHeaderWin);
-          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin) f.parameter = matchArg1('eventAction', triggerClickFooterWin);
-          if (tr.name === 'Click on Download - Footer' && triggerClickFooter) f.parameter = matchArg1('eventAction', triggerClickFooter);
+          if ((tr.name === 'Landing Pages - Windows+FF' || tr.name === 'Landing Pages') && triggerLanding) f.parameter = matchArg1('Page Path', triggerLanding);
+          if ((tr.name === 'Click on Download - Main - Windows+FF' || tr.name === 'Click on Download - Main') && triggerClickMain) f.parameter = matchArg1('eventAction', triggerClickMain);
+          if ((tr.name === 'Click on Download - Header - Windows+FF' || tr.name === 'Click on Download - Header') && triggerClickHeader) f.parameter = matchArg1('eventAction', triggerClickHeader);
+          if ((tr.name === 'Click on Download - Footer - Windows+FF' || tr.name === 'Click on Download - Footer') && triggerClickFooter) f.parameter = matchArg1('eventAction', triggerClickFooter);
           if (tr.name === 'Click on Download - Indicator' && triggerClickIndicator) f.parameter = matchArg1('eventAction', triggerClickIndicator);
-          if (tr.name === 'Click on Download - Main' && triggerClickMainAlt) f.parameter = matchArg1('eventAction', triggerClickMainAlt);
 
           return f;
         });
