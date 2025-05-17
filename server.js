@@ -6,57 +6,54 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Simple HTTP Basic Auth middleware
+// Basic Auth middleware
 const basicAuth = (req, res, next) => {
   const auth = req.headers.authorization;
   const expected = 'Basic ' + Buffer.from('admin:opsotools').toString('base64');
-
-  if (auth === expected) {
-    return next();
-  }
+  if (auth === expected) return next();
 
   res.setHeader('WWW-Authenticate', 'Basic realm="Opsotools"');
   res.status(401).send('Authentication required.');
 };
 
-// Apply auth middleware to all routes
 app.use(basicAuth);
-
-// Serve static content after auth
 app.use(express.static('public'));
 
 app.get('/generate', (req, res) => {
-  const ga4 = req.query.ga4;
-  const ads = req.query.ads;
-  const labelDownload = req.query.labelDownload;
-  const labelLPView = req.query.labelLPView;
-  const labelTYP = req.query.labelTYP;
-  const templateFile = "Firefox-Google-Container.json";
+  const { template, ga4, ads, labelDownload, labelLPView, labelTYP } = req.query;
 
-  const filePath = path.join(__dirname, 'template', templateFile);
-  let template;
+  if (!template) {
+    return res.status(400).send('Missing template selection');
+  }
 
+  const templatePath = path.join(__dirname, 'template', template);
+
+  if (!fs.existsSync(templatePath)) {
+    return res.status(404).send('Selected template not found');
+  }
+
+  let templateData;
   try {
-    template = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    console.log(`📄 Loaded template: ${templateFile}`);
+    templateData = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
+    console.log(`📄 Loaded template: ${template}`);
   } catch (err) {
-    console.error(`❌ Failed to load template "${templateFile}":`, err.message);
-    return res.status(400).send('❌ Invalid template file');
+    console.error(`❌ Failed to parse template "${template}":`, err.message);
+    return res.status(500).send('Template loading error');
   }
 
   const newContainer = {
-    ...template,
+    ...templateData,
     containerVersion: {
-      ...template.containerVersion,
-      variable: Array.isArray(template.containerVersion.variable)
-        ? template.containerVersion.variable.map(v => {
+      ...templateData.containerVersion,
+      variable: Array.isArray(templateData.containerVersion.variable)
+        ? templateData.containerVersion.variable.map(v => {
             if (v.name === 'GA4 ID') v.parameter[0].value = ga4;
             if (v.name === 'Google Ads Conversion ID') v.parameter[0].value = ads;
             return v;
           })
         : [],
-      tag: Array.isArray(template.containerVersion.tag)
-        ? template.containerVersion.tag.map(t => {
+      tag: Array.isArray(templateData.containerVersion.tag)
+        ? templateData.containerVersion.tag.map(t => {
             if (t.name.includes("Click on Download") && t.type === "awct" && labelDownload) {
               t.parameter.forEach(p => {
                 if (p.key === "conversionLabel") p.value = labelDownload;
@@ -79,12 +76,10 @@ app.get('/generate', (req, res) => {
   };
 
   const outputDir = path.join('/tmp', 'exported_containers');
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 15);
-  const outputFilename = `${templateFile.replace('.json', '')}_${timestamp}.json`;
+  const outputFilename = `${template.replace('.json', '')}_${timestamp}.json`;
   const outputPath = path.join(outputDir, outputFilename);
 
   fs.writeFileSync(outputPath, JSON.stringify(newContainer, null, 2));
