@@ -55,7 +55,7 @@ app.get('/generate', (req, res) => {
   };
 
   // Ensure output directory exists
-  const outputDir = path.join(__dirname, 'exported_containers');
+  const outputDir = path.join('/tmp', 'exported_containers');
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
   }
