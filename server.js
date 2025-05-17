@@ -72,20 +72,12 @@ app.get('/generate', (req, res) => {
           }
 
           // Home Page / Home Page - Windows+FF – URL does not contain
-          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomePage) {
+          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomeExclude) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL');
             const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerHomePage && f.negate === true) {
-              target.value = triggerHomePage;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerHomePage);
-            }
-          }
-          if (tr.name.includes('Home Page - Windows+FF') && triggerHomeExclude) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'Page URL');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerHomeExclude) {
+            if (match && target && target.value !== triggerHomeExclude && f.negate === true) {
               target.value = triggerHomeExclude;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerHomeExclude);
+              console.log(`→ Updated ${tr.name} Page URL exclusion to`, triggerHomeExclude);
             }
           }
 
@@ -132,7 +124,15 @@ app.get('/generate', (req, res) => {
           }
 
           // Click on Download triggers - eventAction filters
-          if (tr.name === 'Click on Download - Main' && triggerClickMain) {
+          if (tr.name.includes('Click on Download - Main - Windows+FF') && triggerClickMainAlt) {
+            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
+            const target = f.parameter?.find(p => p.key === 'arg1');
+            if (match && target && target.value !== triggerClickMainAlt) {
+              target.value = triggerClickMainAlt;
+              console.log(`→ Updated ${tr.name} eventAction to`, triggerClickMainAlt);
+            }
+          }
+          if (tr.name.includes('Click on Download - Main') && triggerClickMain) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickMain) {
@@ -140,15 +140,7 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickMain);
             }
           }
-          if (tr.name === 'Click on Download - Main' && triggerClickMainAlt) {
-            const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
-            const target = f.parameter?.find(p => p.key === 'arg1');
-            if (match && target && target.value !== triggerClickMainAlt) {
-              target.value = triggerClickMainAlt;
-              console.log(`→ Updated ${tr.name} arg1 to`, triggerClickMainAlt);
-            }
-          }
-          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin) {
+          if (tr.name.includes('Click on Download - Header - Windows+FF') && triggerClickHeaderWin) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickHeaderWin) {
@@ -156,7 +148,7 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickHeaderWin);
             }
           }
-          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin) {
+          if (tr.name.includes('Click on Download - Footer - Windows+FF') && triggerClickFooterWin) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickFooterWin) {
@@ -164,7 +156,7 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickFooterWin);
             }
           }
-          if (tr.name === 'Click on Download - Header' && !tr.name.includes('Windows+FF') && triggerClickHeader) {
+          if (tr.name.includes('Click on Download - Header') && !tr.name.includes('Windows+FF') && triggerClickHeader) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickHeader) {
@@ -172,7 +164,7 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickHeader);
             }
           }
-          if (tr.name === 'Click on Download - Footer' && !tr.name.includes('Windows+FF') && triggerClickFooter) {
+          if (tr.name.includes('Click on Download - Footer') && !tr.name.includes('Windows+FF') && triggerClickFooter) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickFooter) {
@@ -180,7 +172,7 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickFooter);
             }
           }
-          if (tr.name === 'Click on Download - Indicator' && triggerClickIndicator) {
+          if (tr.name.includes('Click on Download - Indicator') && triggerClickIndicator) {
             const match = f.parameter?.find(p => p.key === 'arg0' && unwrap(p.value) === 'eventAction');
             const target = f.parameter?.find(p => p.key === 'arg1');
             if (match && target && target.value !== triggerClickIndicator) {
