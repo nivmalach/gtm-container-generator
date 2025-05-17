@@ -76,13 +76,18 @@ app.get('/generate', (req, res) => {
             f.parameter = f.parameter.map(p => (p.key === 'arg1' ? { ...p, value: triggerGAHost } : p));
           }
 
-          // Home Page (fixed)
-          if ((tr.name === 'Home Page' || tr.name === 'Home Page - Windows+FF') && triggerHomeExclude) {
-            if (unwrapVal(getArgVal('arg0')) === 'Page URL') {
-              if (getArgVal('arg1') !== triggerHomeExclude) {
-                setArgVal('arg1', triggerHomeExclude);
-                console.log(`→ Updated ${tr.name} arg1 to`, triggerHomeExclude);
-              }
+          // Home Page
+          if (tr.name === 'Home Page' && triggerHomeExclude) {
+            if (unwrap(getArgVal('arg0')) === 'Page URL') {
+              setArgVal('arg1', triggerHomeExclude);
+              console.log(`✅ Updated ${tr.name} arg1 to`, triggerHomeExclude);
+            }
+          }
+          // Home Page - Windows+FF
+          if (tr.name === 'Home Page - Windows+FF' && triggerHomeExclude) {
+            if (unwrap(getArgVal('arg0')) === 'Page URL') {
+              setArgVal('arg1', triggerHomeExclude);
+              console.log(`✅ Updated ${tr.name} arg1 to`, triggerHomeExclude);
             }
           }
 
@@ -110,13 +115,11 @@ app.get('/generate', (req, res) => {
             f.negate = f.negate;
           }
 
-          // Landing Pages - Windows+FF (fixed)
+          // Landing Pages - Windows+FF
           if (tr.name === 'Landing Pages - Windows+FF' && triggerLandingPath) {
-            if (unwrapVal(getArgVal('arg0')) === 'Page Path') {
-              if (getArgVal('arg1') !== triggerLandingPath) {
-                setArgVal('arg1', triggerLandingPath);
-                console.log(`→ Updated ${tr.name} arg1 to`, triggerLandingPath);
-              }
+            if (unwrap(getArgVal('arg0')) === 'Page Path') {
+              setArgVal('arg1', triggerLandingPath);
+              console.log(`✅ Updated ${tr.name} arg1 to`, triggerLandingPath);
             }
           }
           if (tr.name.includes('Landing Pages') && !tr.name.includes('Landing Pages - Windows+FF') && triggerLanding) {
@@ -145,20 +148,18 @@ app.get('/generate', (req, res) => {
               console.log(`→ Updated ${tr.name} arg1 to`, triggerClickMain);
             }
           }
-          if (tr.name.includes('Click on Download - Header - Windows+FF') && triggerClickHeaderWin) {
-            if (unwrapVal(getArgVal('arg0')) === 'eventAction') {
-              if (getArgVal('arg1') !== triggerClickHeaderWin) {
-                setArgVal('arg1', triggerClickHeaderWin);
-                console.log(`→ Updated ${tr.name} arg1 to`, triggerClickHeaderWin);
-              }
+          // Click on Download - Header - Windows+FF
+          if (tr.name === 'Click on Download - Header - Windows+FF' && triggerClickHeaderWin) {
+            if (unwrap(getArgVal('arg0')) === 'eventAction') {
+              setArgVal('arg1', triggerClickHeaderWin);
+              console.log(`✅ Updated ${tr.name} arg1 to`, triggerClickHeaderWin);
             }
           }
-          if (tr.name.includes('Click on Download - Footer - Windows+FF') && triggerClickFooterWin) {
-            if (unwrapVal(getArgVal('arg0')) === 'eventAction') {
-              if (getArgVal('arg1') !== triggerClickFooterWin) {
-                setArgVal('arg1', triggerClickFooterWin);
-                console.log(`→ Updated ${tr.name} arg1 to`, triggerClickFooterWin);
-              }
+          // Click on Download - Footer - Windows+FF
+          if (tr.name === 'Click on Download - Footer - Windows+FF' && triggerClickFooterWin) {
+            if (unwrap(getArgVal('arg0')) === 'eventAction') {
+              setArgVal('arg1', triggerClickFooterWin);
+              console.log(`✅ Updated ${tr.name} arg1 to`, triggerClickFooterWin);
             }
           }
           if (tr.name.includes('Click on Download - Header') && !tr.name.includes('Windows+FF') && triggerClickHeader) {
