@@ -25,6 +25,8 @@ h1 {
   gap: 1rem;
   flex-wrap: wrap;
   margin: 2rem auto;
+  width: 100%;
+  max-width: 600px;
 }
 
 .download-button {
@@ -129,8 +131,12 @@ h2 {
   font-family: 'Inter', sans-serif;
   text-align: center;
   position: fixed;
-  bottom: 10px;
+  bottom: 0;
+  left: 0;
   width: 100%;
+  background: #f9fafb;
+  padding: 0.5rem 0;
+  z-index: 999;
 }
 
 .watermark span#version-number,
