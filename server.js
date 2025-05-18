@@ -68,22 +68,24 @@ app.get('/generate', (req, res) => {
   // Generic helper to update any filter’s arg1 based on arg0 match
   const updateFilterParams = (filters = [], newVal, keyMatch, label) => {
     return filters.map(f => {
-      if (Array.isArray(f.parameter)) {
-        const arg0 = f.parameter.find(p => p.key === 'arg0');
-        const arg1 = f.parameter.find(p => p.key === 'arg1');
-        const arg0Val = unwrap(arg0?.value || '');
-        const shouldUpdate =
-          arg0Val === keyMatch ||
-          arg0Val.includes(keyMatch) ||
-          arg0Val === `{{${keyMatch}}}`;
+      if (!Array.isArray(f.parameter)) return f;
 
-        if (shouldUpdate && arg1 && newVal !== undefined && newVal !== '') {
-          const prev = arg1.value;
-          arg1.value = newVal;
-          console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
-        }
+      const newParams = f.parameter.map(p => ({ ...p })); // clone parameters
+      const arg0 = newParams.find(p => p.key === 'arg0');
+      const arg1 = newParams.find(p => p.key === 'arg1');
+      const arg0Val = unwrap(arg0?.value || '');
+      const shouldUpdate =
+        arg0Val === keyMatch ||
+        arg0Val.includes(keyMatch) ||
+        arg0Val === `{{${keyMatch}}}`;
+
+      if (shouldUpdate && arg1 && newVal !== undefined && newVal !== '') {
+        const prev = arg1.value;
+        arg1.value = newVal;
+        console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
       }
-      return f;
+
+      return { ...f, parameter: newParams }; // clone filter and assign new params
     });
   };
 
