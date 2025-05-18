@@ -71,9 +71,11 @@ app.get('/generate', (req, res) => {
       if (Array.isArray(f.parameter)) {
         const arg0 = f.parameter.find(p => p.key === 'arg0');
         const arg1 = f.parameter.find(p => p.key === 'arg1');
+        const arg0Val = unwrap(arg0?.value || '');
         const shouldUpdate =
-          arg0?.value &&
-          (unwrap(arg0.value).includes(keyMatch) || arg0.value === keyMatch || arg0.value === `{{${keyMatch}}}`);
+          arg0Val === keyMatch ||
+          arg0Val.includes(keyMatch) ||
+          arg0Val === `{{${keyMatch}}}`;
 
         if (shouldUpdate && arg1 && newVal !== undefined && newVal !== '') {
           const prev = arg1.value;
