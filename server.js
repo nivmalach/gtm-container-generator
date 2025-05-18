@@ -65,38 +65,44 @@ app.get('/generate', (req, res) => {
     }
   };
 
-  // Map of trigger display names to the corresponding user-provided values
-  const triggerValueMap = {
-    'Home Page': triggerHomeExclude,
-    'Home Page - Windows+FF': triggerHomeExclude,
-    'Landing Pages - Windows+FF': triggerLandingPath,
-    'Click on Download - Main': triggerClickMain,
-    'Click on Download - Main - Windows+FF': triggerClickMainAlt,
-    'Click on Download - Header': triggerClickHeader,
-    'Click on Download - Header - Windows+FF': triggerClickHeaderWin,
-    'Click on Download - Footer': triggerClickFooter,
-    'Click on Download - Footer - Windows+FF': triggerClickFooterWin,
-    'TYP': triggerTYP || triggerTYPUrl,
-    'TYP - Windows+FF': triggerTYPUrl || triggerTYP,
-    'Pronto': triggerPronto
+  // Generic helper to update any filter’s arg1 based on arg0 match
+  const updateFilterParams = (filters = [], newVal) => {
+    return filters.map(f => {
+      if (f.parameter) {
+        const arg0 = f.parameter.find(p => p.key === 'arg0');
+        const arg1 = f.parameter.find(p => p.key === 'arg1');
+        if (arg0 && arg1 && newVal !== undefined) {
+          arg1.value = newVal;
+          console.log(`→ Updated ${tr.name} ${arg0.value.replace(/{{|}}/g,'')} →`, newVal);
+        }
+      }
+      return f;
+    });
   };
 
-  const updatedTriggers = (templateData.containerVersion.trigger || []).map(tr => {
-    const newVal = triggerValueMap[tr.name];
-    if (newVal) {
-      tr.filter = (tr.filter || []).map(f => {
-        if (f.parameter && f.parameter.length >= 2) {
-          // Always update the second parameter's value
-          f.parameter[1].value = newVal;
-        }
-        return f;
-      });
-      console.log(`→ Updated ${tr.name} arg1 to`, newVal);
+  // Apply user inputs to all relevant triggers
+  newContainer.containerVersion.trigger = (templateData.containerVersion.trigger || []).map(tr => {
+    switch (tr.name) {
+      case 'Home Page':
+      case 'Home Page - Windows+FF':
+        tr.filter = updateFilterParams(tr.filter, triggerHomeExclude);
+        break;
+      case 'Landing Pages - Windows+FF':
+        tr.filter = updateFilterParams(tr.filter, triggerLandingPath);
+        break;
+      case 'Click on Download - Main':
+        tr.filter = updateFilterParams(tr.filter, triggerClickMain);
+        break;
+      case 'Click on Download - Header - Windows+FF':
+        tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin);
+        break;
+      case 'Click on Download - Footer - Windows+FF':
+        tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin);
+        break;
+      // add other cases here if needed
     }
     return tr;
   });
-
-  newContainer.containerVersion.trigger = updatedTriggers;
 
   const outputDir = path.join('/tmp', 'exported_containers');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
