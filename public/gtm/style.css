@@ -4,7 +4,7 @@ body {
   color: #333;
   line-height: 1.6;
   margin: 0;
-  padding: 2rem 2rem 4rem 2rem; /* bottom padding for footer space */
+  padding: 2rem 2rem 6rem 2rem;
 }
 
 form {
@@ -22,9 +22,9 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
-  max-width: 600px;
-  margin: 0 auto 2rem auto;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
 
 .download-button {
@@ -128,10 +128,8 @@ h2 {
   color: #888;
   font-family: 'Inter', sans-serif;
   text-align: center;
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 3rem;
 }
 
 .watermark span#version-number,
