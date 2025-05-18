@@ -1,6 +1,6 @@
 {
   "name": "gtm-container-generator",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Generate GTM containers from a base template",
   "main": "server.js",
   "scripts": {
