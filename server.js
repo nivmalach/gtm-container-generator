@@ -104,8 +104,8 @@ app.get('/generate', (req, res) => {
 
       if (isMatch && arg1 && newVal !== undefined && newVal !== '') {
         const prev = arg1.value;
-        arg1.value = newVal;
-        console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
+        arg1.value = Array.isArray(newVal) ? newVal[0] : String(newVal);
+        console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${arg1.value}"`);
       }
 
       return { ...f, parameter: newParams };
@@ -136,7 +136,6 @@ app.get('/generate', (req, res) => {
   const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 15);
   const outputFilename = `${template.replace('.json', '')}_${timestamp}.json`;
   const outputPath = path.join(outputDir, outputFilename);
-
   fs.writeFileSync(outputPath, JSON.stringify(newContainer, null, 2));
   res.download(outputPath, 'modified-gtm-container.json');
 });

@@ -20,23 +20,19 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMQFCTJ4"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <h1>GTM Container Generator</h1>
+  <h1 style="text-align:center;">GTM Container Generator</h1>
 
   <div class="download-top">
+    <select id="template" name="template" required>
+      <option value="" disabled selected>Select Template</option>
+      <option value="Firefox-Google-Container.json">Firefox (Google)</option>
+      <option value="Chrome-Google-Container.json">Chrome (Google)</option>
+    </select>
     <button type="submit" aria-label="Download GTM container" form="form" class="download-button">Download Container</button>
   </div>
 
   <div class="container">
     <form id="form">
-      <!-- Template Selector -->
-      <div class="form-group">
-        <select id="template" name="template" required>
-          <option value="" disabled selected>Select Template:</option>
-          <option value="Firefox-Google-Container.json">Firefox (Google)</option>
-          <option value="Chrome-Google-Container.json">Chrome (Google)</option>
-        </select>
-      </div>
-
       <div class="flex-sections" id="dynamic-sections">
         <!-- Dynamic content will be injected here based on selected template -->
       </div>
