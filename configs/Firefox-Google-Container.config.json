@@ -36,14 +36,14 @@
         "name": "Click on Download - Header - Windows+FF",
         "matchArg0": "eventAction",
         "key": "triggerClickHeaderWin",
-        "type": "filter",
+        "type": "customEventFilter",
         "label": "Click on Download - Header - Windows+FF (Event Action)"
       },
       {
         "name": "Click on Download - Footer - Windows+FF",
         "matchArg0": "eventAction",
         "key": "triggerClickFooterWin",
-        "type": "filter",
+        "type": "customEventFilter",
         "label": "Click on Download - Footer - Windows+FF (Event Action)"
       },
       {
@@ -85,28 +85,28 @@
         "name": "TYP",
         "matchArg0": "Page URL",
         "key": "triggerTYPUrl",
-        "type": "customEventFilter",
+        "type": "filter",
         "label": "TYP (Page URL)"
       },
       {
         "name": "TYP - Windows+FF",
         "matchArg0": "Page URL",
         "key": "triggerTYPUrl",
-        "type": "customEventFilter",
+        "type": "filter",
         "label": "TYP - Windows+FF (Page URL)"
       },
       {
         "name": "Pronto",
         "matchArg0": "Page URL",
         "key": "triggerPronto",
-        "type": "customEventFilter",
+        "type": "filter",
         "label": "Pronto (Page URL)"
       },
       {
         "name": "GA_Event",
         "matchArg0": "Page Hostname",
         "key": "triggerGAHost",
-        "type": "customEventFilter",
+        "type": "filter",
         "label": "GA_Event (Page Hostname)"
       }
     ]
