@@ -89,36 +89,43 @@ app.get('/generate', (req, res) => {
 
   // Apply user inputs to all relevant triggers (stable version)
   newContainer.containerVersion.trigger = (templateData.containerVersion.trigger || []).map(tr => {
+    const apply = (target, val, key, label) => {
+      if (target) target = updateFilterParams(target, val, key, label);
+      return target;
+    };
+
+    // These triggers use filter (not customEventFilter)
     if (tr.name === 'Home Page') {
-      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
+      tr.filter = apply(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
     }
     if (tr.name === 'Home Page - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
+      tr.filter = apply(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
     }
     if (tr.name === 'Landing Pages - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerLandingPath, 'Page Path', tr.name);
+      tr.filter = apply(tr.filter, triggerLandingPath, 'Page Path', tr.name);
     }
     if (tr.name === 'Click on Download - Header - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
+      tr.filter = apply(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
     }
     if (tr.name === 'Click on Download - Footer - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
+      tr.filter = apply(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
     }
 
-    // Extend updates to customEventFilter as well
+    // Also apply to customEventFilter
     if (tr.customEventFilter) {
-      if (tr.name === 'Click on Download - Main') {
-        tr.filter = updateFilterParams(tr.filter, triggerClickMain, 'eventAction', tr.name);
-      }
-      if (tr.name === 'Click on Download - Header') {
-        tr.filter = updateFilterParams(tr.filter, triggerClickHeader, 'eventAction', tr.name);
-      }
-      if (tr.name === 'Click on Download - Header - Windows+FF') {
-        tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
-      }
-      if (tr.name === 'Click on Download - Footer - Windows+FF') {
-        tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
-      }
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickMain, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickHeader, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickHeaderWin, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickFooterWin, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickFooter, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickIndicator, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerClickMainAlt, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerTYP, 'eventAction', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerGAHost, 'Page Hostname', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerPronto, 'Page URL', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerTYPUrl, 'Page URL', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerHomePage, 'Page URL', tr.name);
+      tr.customEventFilter = apply(tr.customEventFilter, triggerLanding, 'Page Path', tr.name);
     }
 
     return tr;
