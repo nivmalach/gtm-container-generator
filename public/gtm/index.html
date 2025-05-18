@@ -14,6 +14,19 @@
   <title>Opsotools – GTM Generator</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    .footer-fixed {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+    .download-top-row-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -23,16 +36,18 @@
   <h1 style="text-align:center;">GTM Container Generator</h1>
 
   <form id="form">
-    <div class="download-top-row center-align">
-      <div class="selector-wrapper">
-        <select id="template" name="template" required>
-          <option value="" disabled selected>Select Template</option>
-          <option value="Firefox-Google-Container.json">Firefox (Google)</option>
-          <option value="Chrome-Google-Container.json">Chrome (Google)</option>
-        </select>
-      </div>
-      <div class="button-wrapper">
-        <button type="submit" aria-label="Download GTM container" class="download-button">Download Container</button>
+    <div class="download-top-row-container">
+      <div class="download-top-row center-align">
+        <div class="selector-wrapper">
+          <select id="template" name="template" required>
+            <option value="" disabled selected>Select Template</option>
+            <option value="Firefox-Google-Container.json">Firefox (Google)</option>
+            <option value="Chrome-Google-Container.json">Chrome (Google)</option>
+          </select>
+        </div>
+        <div class="button-wrapper">
+          <button type="submit" aria-label="Download GTM container" class="download-button">Download Container</button>
+        </div>
       </div>
     </div>
 

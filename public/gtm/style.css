@@ -24,7 +24,7 @@ h1 {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
+  margin: 2rem auto;
 }
 
 .download-button {
@@ -128,8 +128,9 @@ h2 {
   color: #888;
   font-family: 'Inter', sans-serif;
   text-align: center;
-  position: relative;
-  margin-top: 3rem;
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
 }
 
 .watermark span#version-number,
