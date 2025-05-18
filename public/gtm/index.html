@@ -22,7 +22,7 @@
   <!-- End Google Tag Manager (noscript) -->
   <h1 style="text-align:center;">GTM Container Generator</h1>
 
-  <div class="download-top-row">
+  <div class="download-top-row center-align">
     <div class="selector-wrapper">
       <select id="template" name="template" required>
         <option value="" disabled selected>Select Template</option>
@@ -41,7 +41,7 @@
         <!-- Dynamic content will be injected here based on selected template -->
       </div>
       <div class="form-actions">
-        <footer class="watermark footer-sticky" id="version-info">
+        <footer class="watermark footer-fixed" id="version-info">
           © Niv Malach – <strong>Version</strong> <span id="version-number">...</span>
         </footer>
       </div>
@@ -140,7 +140,7 @@
   });
 
 // Auto-trigger template load on first render
-document.getElementById('template').dispatchEvent(new Event('change'));
+// document.getElementById('template').dispatchEvent(new Event('change'));
 </script>
 <script>
   fetch('/version')
