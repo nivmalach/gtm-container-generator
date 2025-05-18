@@ -38,85 +38,12 @@
         </select>
       </div>
 
-      <div class="flex-sections">
-        <section class="column">
-          <h2>Tags</h2>
-          <div class="form-group">
-            <label for="labelDownload">Conversion Label – Click on Download:</label>
-            <input type="text" id="labelDownload" name="labelDownload" placeholder="e.g. ABC123xyz">
-          </div>
-
-          <div class="form-group">
-            <label for="labelLPView">Conversion Label – LP View:</label>
-            <input type="text" id="labelLPView" name="labelLPView" placeholder="e.g. XYZ789abc">
-          </div>
-
-          <div class="form-group">
-            <label for="labelTYP">Conversion Label – TYP:</label>
-            <input type="text" id="labelTYP" name="labelTYP" placeholder="e.g. LMN456def">
-          </div>
-        </section>
-        <section class="column">
-          <h2>Triggers</h2>
-          <div class="trigger-columns">
-            <div class="column">
-              <div class="form-group">
-                <label for="triggerGAHost">GA_Event – Hostname:</label>
-                <input type="text" id="triggerGAHost" name="triggerGAHost" placeholder="e.g. www.example.com">
-              </div>
-              <div class="form-group">
-                <label for="triggerHome">Home Page – URL to exclude (Pronto):</label>
-                <input type="text" id="triggerHome" name="triggerHome" placeholder="e.g. /exclude-path/">
-              </div>
-              <div class="form-group">
-                <label for="triggerLanding">Landing Pages (matches RegEx) – Page Path:</label>
-                <input type="text" id="triggerLanding" name="triggerLanding" placeholder="e.g. /landing-page/">
-              </div>
-              <div class="form-group">
-                <label for="triggerTYP">TYP – Page URL:</label>
-                <input type="text" id="triggerTYP" name="triggerTYP" placeholder="e.g. https://example.com/thank-you">
-              </div>
-              <div class="form-group">
-                <label for="triggerClickMain">Click on Download - Main – eventAction:</label>
-                <input type="text" id="triggerClickMain" name="triggerClickMain" placeholder="e.g. download_main">
-              </div>
-            </div>
-            <div class="column">
-              <div class="form-group">
-                <label for="triggerClickHeader">Click on Download - Header – eventAction:</label>
-                <input type="text" id="triggerClickHeader" name="triggerClickHeader" placeholder="e.g. download_header">
-              </div>
-              <div class="form-group">
-                <label for="triggerClickFooter">Click on Download - Footer (matches RegEx) – eventAction:</label>
-                <input type="text" id="triggerClickFooter" name="triggerClickFooter" placeholder="e.g. download_footer">
-              </div>
-              <div class="form-group">
-                <label for="triggerClickIndicator">Click on Download - Indicator – eventAction:</label>
-                <input type="text" id="triggerClickIndicator" name="triggerClickIndicator" placeholder="e.g. download_indicator">
-              </div>
-              <div class="form-group">
-                <label for="triggerPronto">Pronto – Page URL:</label>
-                <input type="text" id="triggerPronto" name="triggerPronto" placeholder="e.g. https://example.com/pronto-page">
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="column">
-          <h2>Variables</h2>
-          <div class="form-group">
-            <label for="ga4">GA4 Measurement ID:</label>
-            <input type="text" id="ga4" name="ga4" required placeholder="G-XXXXXXXXXX">
-          </div>
-
-          <div class="form-group">
-            <label for="ads">Google Ads Conversion ID:</label>
-            <input type="text" id="ads" name="ads" required placeholder="AW-XXXXXXXXXX">
-          </div>
-        </section>
+      <div class="flex-sections" id="dynamic-sections">
+        <!-- Dynamic content will be injected here based on selected template -->
       </div>
       <div class="form-actions">
-        <footer class="watermark">
-          © Niv Malach – Version 1.0.3
+        <footer class="watermark" id="version-info">
+          © Niv Malach – Version <span id="version-number">...</span>
         </footer>
       </div>
     </form>
@@ -144,5 +71,79 @@
       a.remove();
     });
   </script>
+
+<script>
+  const configMap = {
+    "Firefox-Google-Container.json": {
+      variables: [
+        { name: "GA4 ID", key: "ga4", label: "GA Measurement ID" },
+        { name: "Google Ads Conversion ID", key: "ads", label: "Google Ads Conversion ID" }
+      ],
+      tags: [
+        { name: "Click on Download", key: "labelDownload", label: "Conversion Label – Click on Download" },
+        { name: "LP View", key: "labelLPView", label: "Conversion Label – LP View" },
+        { name: "TYP", key: "labelTYP", label: "Conversion Label – TYP" }
+      ],
+      triggers: [
+        { name: "Home Page", key: "triggerHomeExclude", label: "Home Page – URL to exclude (Pronto)" },
+        { name: "Home Page - Windows+FF", key: "triggerHomeExclude", label: "Home Page - Windows+FF – URL to exclude (Pronto)" },
+        { name: "Landing Pages - Windows+FF", key: "triggerLandingPath", label: "Landing Pages - Windows+FF – Page Path" },
+        { name: "Click on Download - Header - Windows+FF", key: "triggerClickHeaderWin", label: "Click on Download - Header - Windows+FF – eventAction" },
+        { name: "Click on Download - Footer - Windows+FF", key: "triggerClickFooterWin", label: "Click on Download - Footer - Windows+FF – eventAction" }
+      ]
+    }
+  };
+
+  document.getElementById('template').addEventListener('change', function () {
+    const selected = this.value;
+    const config = configMap[selected];
+    const target = document.getElementById('dynamic-sections');
+    target.innerHTML = '';
+
+    if (!config) return;
+
+    const createSection = (title, fields) => {
+      const section = document.createElement('section');
+      section.className = 'column';
+      const h2 = document.createElement('h2');
+      h2.textContent = title;
+      section.appendChild(h2);
+
+      fields.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'form-group';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', f.key);
+        label.textContent = f.label;
+        div.appendChild(label);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = f.key;
+        input.name = f.key;
+        div.appendChild(input);
+
+        section.appendChild(div);
+      });
+
+      return section;
+    };
+
+    target.appendChild(createSection('Tags', config.tags));
+    target.appendChild(createSection('Triggers', config.triggers));
+    target.appendChild(createSection('Variables', config.variables));
+  });
+
+// Auto-trigger template load on first render
+document.getElementById('template').dispatchEvent(new Event('change'));
+</script>
+<script>
+  fetch('/version')
+    .then(res => res.text())
+    .then(v => {
+      document.getElementById('version-number').textContent = v;
+    });
+</script>
 </body>
 </html>

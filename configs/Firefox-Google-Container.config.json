@@ -1,0 +1,51 @@
+{
+  "template": "Firefox-Google-Container.json",
+  "editableFields": {
+    "variables": [
+      { "name": "GA4 ID", "key": "ga4", "label": "GA Measurement ID" },
+      { "name": "Google Ads Conversion ID", "key": "ads", "label": "Google Ads Conversion ID" }
+    ],
+    "tags": [
+      { "name": "Click on Download", "key": "labelDownload", "label": "Conversion Label: Click on Download" },
+      { "name": "LP View", "key": "labelLPView", "label": "Conversion Label: LP View" },
+      { "name": "TYP", "key": "labelTYP", "label": "Conversion Label: TYP" }
+    ],
+    "triggers": [
+      {
+        "name": "Home Page",
+        "matchArg0": "Page URL",
+        "key": "triggerHomeExclude",
+        "type": "filter",
+        "label": "Home Page (URL to exclude)"
+      },
+      {
+        "name": "Home Page - Windows+FF",
+        "matchArg0": "Page URL",
+        "key": "triggerHomeExclude",
+        "type": "filter",
+        "label": "Home Page - Windows+FF (URL to exclude)"
+      },
+      {
+        "name": "Landing Pages - Windows+FF",
+        "matchArg0": "Page Path",
+        "key": "triggerLandingPath",
+        "type": "filter",
+        "label": "Landing Pages - Windows+FF (Page Path)"
+      },
+      {
+        "name": "Click on Download - Header - Windows+FF",
+        "matchArg0": "eventAction",
+        "key": "triggerClickHeaderWin",
+        "type": "filter",
+        "label": "Click on Download - Header - Windows+FF (Event Action)"
+      },
+      {
+        "name": "Click on Download - Footer - Windows+FF",
+        "matchArg0": "eventAction",
+        "key": "triggerClickFooterWin",
+        "type": "filter",
+        "label": "Click on Download - Footer - Windows+FF (Event Action)"
+      }
+    ]
+  }
+}

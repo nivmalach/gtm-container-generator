@@ -2,8 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
+
 const app = express();
 const PORT = 3000;
+
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 
 const basicAuth = (req, res, next) => {
   const auth = req.headers.authorization;
@@ -15,6 +18,10 @@ const basicAuth = (req, res, next) => {
 
 app.use(basicAuth);
 app.use(express.static('public'));
+
+app.get('/version', (req, res) => {
+  res.send(pkg.version);
+});
 
 app.get('/generate', (req, res) => {
   const {
@@ -41,25 +48,37 @@ app.get('/generate', (req, res) => {
     return res.status(500).send('Template load failed: ' + err.message);
   }
 
+  // Dynamically load config for this template
+  const configPath = path.join(__dirname, 'configs', template.replace('.json', '.config.json'));
+  if (!fs.existsSync(configPath)) return res.status(404).send('Template config not found');
+
+  let configData;
+  try {
+    configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    console.log(`⚙️ Loaded config: ${configPath}`);
+  } catch (err) {
+    return res.status(500).send('Config load failed: ' + err.message);
+  }
+
   const newContainer = {
     ...templateData,
     containerVersion: {
       ...templateData.containerVersion,
       variable: (templateData.containerVersion.variable || []).map(v => {
-        if (v.name === 'GA4 ID') v.parameter[0].value = ga4;
-        if (v.name === 'Google Ads Conversion ID') v.parameter[0].value = ads;
+        const fieldDef = (configData.editableFields.variables || []).find(d => d.name === v.name);
+        if (fieldDef && req.query[fieldDef.key] !== undefined) {
+          v.parameter[0].value = req.query[fieldDef.key];
+        }
         return v;
       }),
       tag: (templateData.containerVersion.tag || []).map(t => {
-        if (t.name.includes("Click on Download") && labelDownload && t.parameter) {
-          t.parameter.forEach(p => { if (p.key === "conversionLabel") p.value = labelDownload; });
-        }
-        if (t.name.includes("LP View") && labelLPView && t.parameter) {
-          t.parameter.forEach(p => { if (p.key === "conversionLabel") p.value = labelLPView; });
-        }
-        if (t.name.includes("TYP") && labelTYP && t.parameter) {
-          t.parameter.forEach(p => { if (p.key === "conversionLabel") p.value = labelTYP; });
-        }
+        (configData.editableFields.tags || []).forEach(tagDef => {
+          if (t.name.includes(tagDef.name) && req.query[tagDef.key] && t.parameter) {
+            t.parameter.forEach(p => {
+              if (p.key === "conversionLabel") p.value = req.query[tagDef.key];
+            });
+          }
+        });
         return t;
       }),
     }
@@ -96,22 +115,16 @@ app.get('/generate', (req, res) => {
       return target;
     };
 
-    // These triggers use filter (not customEventFilter)
-    if (tr.name === 'Home Page') {
-      tr.filter = apply(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
-    }
-    if (tr.name === 'Home Page - Windows+FF') {
-      tr.filter = apply(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
-    }
-    if (tr.name === 'Landing Pages - Windows+FF') {
-      tr.filter = apply(tr.filter, triggerLandingPath, 'Page Path', tr.name);
-    }
-    if (tr.name === 'Click on Download - Header - Windows+FF') {
-      tr.filter = apply(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
-    }
-    if (tr.name === 'Click on Download - Footer - Windows+FF') {
-      tr.filter = apply(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
-    }
+    (configData.editableFields.triggers || []).forEach(triggerDef => {
+      if (tr.name === triggerDef.name) {
+        const inputVal = req.query[triggerDef.key];
+        if (triggerDef.type === 'filter') {
+          tr.filter = apply(tr.filter, inputVal, triggerDef.matchArg0, tr.name);
+        } else if (triggerDef.type === 'customEventFilter') {
+          tr.customEventFilter = apply(tr.customEventFilter, inputVal, triggerDef.matchArg0, tr.name);
+        }
+      }
+    });
 
     // Also apply to customEventFilter
     if (tr.customEventFilter) {
