@@ -22,7 +22,7 @@ app.use(express.static('public'));
 app.get('/version', (req, res) => {
   res.send(pkg.version);
 });
-// Trigger redeploy
+
 app.get('/generate', (req, res) => {
   const {
     template, ga4, ads,
@@ -101,16 +101,17 @@ app.get('/generate', (req, res) => {
       const arg1 = newParams.find(p => p.key === 'arg1');
 
       const clean = v => v?.replace(/[{}]/g, '').trim();
+      const keyList = Array.isArray(keyMatch) ? keyMatch : [keyMatch];
       const isMatch = (
         arg0 &&
         typeof arg0.value === 'string' &&
-        clean(arg0.value) === clean(keyMatch)
+        keyList.some(expected => clean(arg0.value) === clean(expected))
       );
 
       if (isMatch && arg1 && newVal !== undefined && newVal !== '') {
         const prev = arg1.value;
         arg1.value = Array.isArray(newVal) ? newVal[0] : String(newVal);
-        console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${arg1.value}"`);
+        console.log(`→ Updated trigger [${label}] ${arg0.value} from "${prev}" → "${arg1.value}"`);
       }
 
       return { ...f, parameter: newParams };
@@ -124,9 +125,10 @@ app.get('/generate', (req, res) => {
         const val = req.query[triggerDef.key];
         if (!val) return;
 
-        if (triggerDef.type === 'filter') {
+        if (tr.filter) {
           tr.filter = updateFilterParamsRecursive(tr.filter, val, triggerDef.matchArg0, tr.name);
-        } else if (triggerDef.type === 'customEventFilter') {
+        }
+        if (tr.customEventFilter) {
           tr.customEventFilter = updateFilterParamsRecursive(tr.customEventFilter, val, triggerDef.matchArg0, tr.name);
         }
       }

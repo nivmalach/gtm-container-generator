@@ -13,98 +13,98 @@
     "triggers": [
       {
         "name": "Home Page",
-        "matchArg0": "Page URL",
+        "matchArg0": ["Page URL", "{{Page URL}}"],
         "key": "triggerHomeExclude",
         "type": "filter",
         "label": "Home Page (URL to exclude)"
       },
       {
         "name": "Home Page - Windows+FF",
-        "matchArg0": "Page URL",
+        "matchArg0": ["Page URL", "{{Page URL}}"],
         "key": "triggerHomeExclude",
         "type": "filter",
         "label": "Home Page - Windows+FF (URL to exclude)"
       },
       {
         "name": "Landing Pages - Windows+FF",
-        "matchArg0": "Page Path",
+        "matchArg0": ["Page Path", "{{Page Path}}"],
         "key": "triggerLandingPath",
         "type": "filter",
         "label": "Landing Pages - Windows+FF (Page Path)"
       },
       {
         "name": "Click on Download - Header - Windows+FF",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickHeaderWin",
         "type": "customEventFilter",
         "label": "Click on Download - Header - Windows+FF (Event Action)"
       },
       {
         "name": "Click on Download - Footer - Windows+FF",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickFooterWin",
         "type": "customEventFilter",
         "label": "Click on Download - Footer - Windows+FF (Event Action)"
       },
       {
         "name": "Click on Download - Main",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickMain",
         "type": "customEventFilter",
         "label": "Click on Download - Main (Event Action)"
       },
       {
         "name": "Click on Download - Main - Windows+FF",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickMainAlt",
         "type": "customEventFilter",
         "label": "Click on Download - Main - Windows+FF (Event Action)"
       },
       {
         "name": "Click on Download - Header",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickHeader",
         "type": "customEventFilter",
         "label": "Click on Download - Header (Event Action)"
       },
       {
         "name": "Click on Download - Footer",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickFooter",
         "type": "customEventFilter",
         "label": "Click on Download - Footer (Event Action)"
       },
       {
         "name": "Click on Download - Indicator",
-        "matchArg0": "eventAction",
+        "matchArg0": ["eventAction", "{{eventAction}}"],
         "key": "triggerClickIndicator",
         "type": "customEventFilter",
         "label": "Click on Download - Indicator (Event Action)"
       },
       {
         "name": "TYP",
-        "matchArg0": "Page URL",
+        "matchArg0": ["Page URL", "{{Page URL}}"],
         "key": "triggerTYPUrl",
         "type": "filter",
         "label": "TYP (Page URL)"
       },
       {
         "name": "TYP - Windows+FF",
-        "matchArg0": "Page URL",
+        "matchArg0": ["Page URL", "{{Page URL}}"],
         "key": "triggerTYPUrl",
         "type": "filter",
         "label": "TYP - Windows+FF (Page URL)"
       },
       {
         "name": "Pronto",
-        "matchArg0": "Page URL",
+        "matchArg0": ["Page URL", "{{Page URL}}"],
         "key": "triggerPronto",
         "type": "filter",
         "label": "Pronto (Page URL)"
       },
       {
         "name": "GA_Event",
-        "matchArg0": "Page Hostname",
+        "matchArg0": ["Page Hostname", "{{Page Hostname}}"],
         "key": "triggerGAHost",
         "type": "filter",
         "label": "GA_Event (Page Hostname)"
