@@ -66,14 +66,18 @@ app.get('/generate', (req, res) => {
   };
 
   // Generic helper to update any filter’s arg1 based on arg0 match
-  const updateFilterParams = (filters = [], newVal, keyMatch) => {
+  const updateFilterParams = (filters = [], newVal, keyMatch, label) => {
     return filters.map(f => {
-      if (f.parameter) {
+      if (Array.isArray(f.parameter)) {
         const arg0 = f.parameter.find(p => p.key === 'arg0');
         const arg1 = f.parameter.find(p => p.key === 'arg1');
-        if (arg0 && arg1 && unwrap(arg0.value) === keyMatch && newVal !== undefined) {
+        if (
+          arg0?.value && unwrap(arg0.value) === keyMatch &&
+          arg1 && newVal !== undefined && newVal !== ''
+        ) {
+          const prev = arg1.value;
           arg1.value = newVal;
-          console.log(`→ Updated trigger filter ${keyMatch} →`, newVal);
+          console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
         }
       }
       return f;
@@ -83,19 +87,19 @@ app.get('/generate', (req, res) => {
   // Apply user inputs to all relevant triggers (stable version)
   newContainer.containerVersion.trigger = (templateData.containerVersion.trigger || []).map(tr => {
     if (tr.name === 'Home Page') {
-      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL');
+      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
     }
     if (tr.name === 'Home Page - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL');
+      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL', tr.name);
     }
     if (tr.name === 'Landing Pages - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerLandingPath, 'Page Path');
+      tr.filter = updateFilterParams(tr.filter, triggerLandingPath, 'Page Path', tr.name);
     }
     if (tr.name === 'Click on Download - Header - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction');
+      tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
     }
     if (tr.name === 'Click on Download - Footer - Windows+FF') {
-      tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction');
+      tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
     }
     return tr;
   });
