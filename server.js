@@ -71,10 +71,11 @@ app.get('/generate', (req, res) => {
       if (Array.isArray(f.parameter)) {
         const arg0 = f.parameter.find(p => p.key === 'arg0');
         const arg1 = f.parameter.find(p => p.key === 'arg1');
-        if (
-          arg0?.value && unwrap(arg0.value).includes(keyMatch) &&
-          arg1 && newVal !== undefined && newVal !== ''
-        ) {
+        const shouldUpdate =
+          arg0?.value &&
+          (unwrap(arg0.value).includes(keyMatch) || arg0.value === keyMatch || arg0.value === `{{${keyMatch}}}`);
+
+        if (shouldUpdate && arg1 && newVal !== undefined && newVal !== '') {
           const prev = arg1.value;
           arg1.value = newVal;
           console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
@@ -101,6 +102,23 @@ app.get('/generate', (req, res) => {
     if (tr.name === 'Click on Download - Footer - Windows+FF') {
       tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
     }
+
+    // Extend updates to customEventFilter as well
+    if (tr.customEventFilter) {
+      if (tr.name === 'Click on Download - Main') {
+        tr.filter = updateFilterParams(tr.filter, triggerClickMain, 'eventAction', tr.name);
+      }
+      if (tr.name === 'Click on Download - Header') {
+        tr.filter = updateFilterParams(tr.filter, triggerClickHeader, 'eventAction', tr.name);
+      }
+      if (tr.name === 'Click on Download - Header - Windows+FF') {
+        tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction', tr.name);
+      }
+      if (tr.name === 'Click on Download - Footer - Windows+FF') {
+        tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction', tr.name);
+      }
+    }
+
     return tr;
   });
 
