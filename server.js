@@ -100,14 +100,11 @@ app.get('/generate', (req, res) => {
       const arg0 = newParams.find(p => p.key === 'arg0');
       const arg1 = newParams.find(p => p.key === 'arg1');
 
+      const clean = v => v?.replace(/[{}]/g, '').trim();
       const isMatch = (
         arg0 &&
         typeof arg0.value === 'string' &&
-        (
-          arg0.value === keyMatch ||
-          arg0.value === `{{${keyMatch}}}` ||
-          arg0.value.includes(keyMatch)
-        )
+        clean(arg0.value) === clean(keyMatch)
       );
 
       if (isMatch && arg1 && newVal !== undefined && newVal !== '') {

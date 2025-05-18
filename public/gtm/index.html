@@ -24,7 +24,22 @@
     .download-top-row-container {
       display: flex;
       justify-content: center;
+      align-items: center;
       margin-bottom: 1rem;
+      gap: 10px;
+    }
+    .inline-select,
+    .inline-button {
+      height: 40px;
+      font-size: 16px;
+      padding: 0 12px;
+      margin: 0 4px;
+    }
+    .inline-select {
+      width: 240px;
+    }
+    .inline-button {
+      width: 240px;
     }
   </style>
 </head>
@@ -37,18 +52,12 @@
 
   <form id="form">
     <div class="download-top-row-container">
-      <div class="download-top-row center-align">
-        <div class="selector-wrapper">
-          <select id="template" name="template" required>
-            <option value="" disabled selected>Select Template</option>
-            <option value="Firefox-Google-Container.json">Firefox (Google)</option>
-            <option value="Chrome-Google-Container.json">Chrome (Google)</option>
-          </select>
-        </div>
-        <div class="button-wrapper">
-          <button type="submit" aria-label="Download GTM container" class="download-button">Download Container</button>
-        </div>
-      </div>
+      <select id="template" name="template" required class="inline-select">
+        <option value="" disabled selected>Select Template</option>
+        <option value="Firefox-Google-Container.json">Firefox (Google)</option>
+        <option value="Chrome-Google-Container.json">Chrome (Google)</option>
+      </select>
+      <button type="submit" aria-label="Download GTM container" class="inline-button">Download Container</button>
     </div>
 
     <div class="container">

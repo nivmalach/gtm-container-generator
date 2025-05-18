@@ -4,7 +4,7 @@ body {
   color: #333;
   line-height: 1.6;
   margin: 0;
-  padding: 2rem 2rem 6rem 2rem;
+  padding: 2rem 2rem 8rem 2rem;
 }
 
 form {
@@ -42,6 +42,7 @@ h1 {
   transition: background 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
   height: 40px;
+  min-width: 240px;
 }
 
 .download-button:hover {
