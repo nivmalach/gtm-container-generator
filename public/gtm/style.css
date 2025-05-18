@@ -108,3 +108,11 @@ h2 {
   font-weight: 600;
   color: #555;
 }
+
+select:invalid {
+  color: #888;
+}
+
+select {
+  margin-bottom: 1rem;
+}

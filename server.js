@@ -153,7 +153,7 @@ app.get('/generate', (req, res) => {
   const outputFilename = `${template.replace('.json', '')}_${timestamp}.json`;
   const outputPath = path.join(outputDir, outputFilename);
 
-  fs.writeFileSync(outputPath, JSON.stringify(newContainer, null, 2));
+  fs.writeFileSync(outputPath, JSON.stringify({ container: newContainer }, null, 2));
   res.download(outputPath, 'modified-gtm-container.json');
 });
 
