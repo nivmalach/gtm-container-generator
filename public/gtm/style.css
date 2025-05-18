@@ -20,9 +20,9 @@ h1 {
 
 .download-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   max-width: 600px;
   margin: 0 auto 2rem auto;
 }
@@ -120,7 +120,10 @@ h2 {
   color: #888;
   font-family: 'Inter', sans-serif;
   text-align: center;
-  margin-top: 3rem;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .watermark span#version-number,

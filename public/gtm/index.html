@@ -22,13 +22,17 @@
   <!-- End Google Tag Manager (noscript) -->
   <h1 style="text-align:center;">GTM Container Generator</h1>
 
-  <div class="download-top">
-    <select id="template" name="template" required>
-      <option value="" disabled selected>Select Template</option>
-      <option value="Firefox-Google-Container.json">Firefox (Google)</option>
-      <option value="Chrome-Google-Container.json">Chrome (Google)</option>
-    </select>
-    <button type="submit" aria-label="Download GTM container" form="form" class="download-button">Download Container</button>
+  <div class="download-top-row">
+    <div class="selector-wrapper">
+      <select id="template" name="template" required>
+        <option value="" disabled selected>Select Template</option>
+        <option value="Firefox-Google-Container.json">Firefox (Google)</option>
+        <option value="Chrome-Google-Container.json">Chrome (Google)</option>
+      </select>
+    </div>
+    <div class="button-wrapper">
+      <button type="submit" aria-label="Download GTM container" form="form" class="download-button">Download Container</button>
+    </div>
   </div>
 
   <div class="container">
@@ -37,8 +41,8 @@
         <!-- Dynamic content will be injected here based on selected template -->
       </div>
       <div class="form-actions">
-        <footer class="watermark" id="version-info">
-          © Niv Malach – Version <span id="version-number">...</span>
+        <footer class="watermark footer-sticky" id="version-info">
+          © Niv Malach – <strong>Version</strong> <span id="version-number">...</span>
         </footer>
       </div>
     </form>
@@ -47,6 +51,11 @@
   <script>
     document.getElementById('form').addEventListener('submit', async function(e) {
       e.preventDefault();
+      const templateValue = document.getElementById('template').value;
+      if (!templateValue) {
+        alert("Error: Missing template selection");
+        return;
+      }
       const data = new FormData(e.target);
       const params = new URLSearchParams([...data.entries()]);
 
