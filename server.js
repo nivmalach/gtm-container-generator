@@ -72,7 +72,7 @@ app.get('/generate', (req, res) => {
         const arg0 = f.parameter.find(p => p.key === 'arg0');
         const arg1 = f.parameter.find(p => p.key === 'arg1');
         if (
-          arg0?.value && unwrap(arg0.value) === keyMatch &&
+          arg0?.value && unwrap(arg0.value).includes(keyMatch) &&
           arg1 && newVal !== undefined && newVal !== ''
         ) {
           const prev = arg1.value;
