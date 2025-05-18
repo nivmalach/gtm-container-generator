@@ -45,6 +45,69 @@
         "key": "triggerClickFooterWin",
         "type": "filter",
         "label": "Click on Download - Footer - Windows+FF (Event Action)"
+      },
+      {
+        "name": "Click on Download - Main",
+        "matchArg0": "eventAction",
+        "key": "triggerClickMain",
+        "type": "customEventFilter",
+        "label": "Click on Download - Main (Event Action)"
+      },
+      {
+        "name": "Click on Download - Main - Windows+FF",
+        "matchArg0": "eventAction",
+        "key": "triggerClickMainAlt",
+        "type": "customEventFilter",
+        "label": "Click on Download - Main - Windows+FF (Event Action)"
+      },
+      {
+        "name": "Click on Download - Header",
+        "matchArg0": "eventAction",
+        "key": "triggerClickHeader",
+        "type": "customEventFilter",
+        "label": "Click on Download - Header (Event Action)"
+      },
+      {
+        "name": "Click on Download - Footer",
+        "matchArg0": "eventAction",
+        "key": "triggerClickFooter",
+        "type": "customEventFilter",
+        "label": "Click on Download - Footer (Event Action)"
+      },
+      {
+        "name": "Click on Download - Indicator",
+        "matchArg0": "eventAction",
+        "key": "triggerClickIndicator",
+        "type": "customEventFilter",
+        "label": "Click on Download - Indicator (Event Action)"
+      },
+      {
+        "name": "TYP",
+        "matchArg0": "Page URL",
+        "key": "triggerTYPUrl",
+        "type": "customEventFilter",
+        "label": "TYP (Page URL)"
+      },
+      {
+        "name": "TYP - Windows+FF",
+        "matchArg0": "Page URL",
+        "key": "triggerTYPUrl",
+        "type": "customEventFilter",
+        "label": "TYP - Windows+FF (Page URL)"
+      },
+      {
+        "name": "Pronto",
+        "matchArg0": "Page URL",
+        "key": "triggerPronto",
+        "type": "customEventFilter",
+        "label": "Pronto (Page URL)"
+      },
+      {
+        "name": "GA_Event",
+        "matchArg0": "Page Hostname",
+        "key": "triggerGAHost",
+        "type": "customEventFilter",
+        "label": "GA_Event (Page Hostname)"
       }
     ]
   }

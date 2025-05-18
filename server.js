@@ -84,64 +84,48 @@ app.get('/generate', (req, res) => {
     }
   };
 
-  // Generic helper to update any filter’s arg1 based on arg0 match
   const updateFilterParams = (filters = [], newVal, keyMatch, label) => {
     return filters.map(f => {
       if (!Array.isArray(f.parameter)) return f;
 
-      const newParams = f.parameter.map(p => ({ ...p })); // clone parameters
+      const newParams = f.parameter.map(p => ({ ...p }));
       const arg0 = newParams.find(p => p.key === 'arg0');
       const arg1 = newParams.find(p => p.key === 'arg1');
-      const arg0Val = unwrap(arg0?.value || '');
-      const shouldUpdate =
-        arg0Val === keyMatch ||
-        arg0Val.includes(keyMatch) ||
-        arg0Val === `{{${keyMatch}}}`;
 
-      if (shouldUpdate && arg1 && newVal !== undefined && newVal !== '') {
+      const isMatch = (
+        arg0 &&
+        typeof arg0.value === 'string' &&
+        (
+          arg0.value === keyMatch ||
+          arg0.value === `{{${keyMatch}}}` ||
+          arg0.value.includes(keyMatch)
+        )
+      );
+
+      if (isMatch && arg1 && newVal !== undefined && newVal !== '') {
         const prev = arg1.value;
         arg1.value = newVal;
         console.log(`→ Updated trigger [${label}] ${keyMatch} from "${prev}" → "${newVal}"`);
       }
 
-      return { ...f, parameter: newParams }; // clone filter and assign new params
+      return { ...f, parameter: newParams };
     });
   };
 
-  // Apply user inputs to all relevant triggers (stable version)
+  // Apply user inputs to all relevant triggers (enhanced version)
   newContainer.containerVersion.trigger = (templateData.containerVersion.trigger || []).map(tr => {
-    const apply = (target, val, key, label) => {
-      if (target) target = updateFilterParams(target, val, key, label);
-      return target;
-    };
-
     (configData.editableFields.triggers || []).forEach(triggerDef => {
       if (tr.name === triggerDef.name) {
-        const inputVal = req.query[triggerDef.key];
+        const val = req.query[triggerDef.key];
+        if (!val) return;
+
         if (triggerDef.type === 'filter') {
-          tr.filter = apply(tr.filter, inputVal, triggerDef.matchArg0, tr.name);
+          tr.filter = updateFilterParams(tr.filter, val, triggerDef.matchArg0, tr.name);
         } else if (triggerDef.type === 'customEventFilter') {
-          tr.customEventFilter = apply(tr.customEventFilter, inputVal, triggerDef.matchArg0, tr.name);
+          tr.customEventFilter = updateFilterParams(tr.customEventFilter, val, triggerDef.matchArg0, tr.name);
         }
       }
     });
-
-    // Also apply to customEventFilter
-    if (tr.customEventFilter) {
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickMain, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickHeader, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickHeaderWin, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickFooterWin, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickFooter, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickIndicator, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerClickMainAlt, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerTYP, 'eventAction', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerGAHost, 'Page Hostname', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerPronto, 'Page URL', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerTYPUrl, 'Page URL', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerHomePage, 'Page URL', tr.name);
-      tr.customEventFilter = apply(tr.customEventFilter, triggerLanding, 'Page Path', tr.name);
-    }
 
     return tr;
   });
