@@ -22,7 +22,7 @@ app.use(express.static('public'));
 app.get('/version', (req, res) => {
   res.send(pkg.version);
 });
-
+// Trigger redeploy
 app.get('/generate', (req, res) => {
   const {
     template, ga4, ads,
