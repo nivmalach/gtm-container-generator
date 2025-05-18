@@ -66,40 +66,36 @@ app.get('/generate', (req, res) => {
   };
 
   // Generic helper to update any filter’s arg1 based on arg0 match
-  const updateFilterParams = (filters = [], newVal) => {
+  const updateFilterParams = (filters = [], newVal, keyMatch) => {
     return filters.map(f => {
       if (f.parameter) {
         const arg0 = f.parameter.find(p => p.key === 'arg0');
         const arg1 = f.parameter.find(p => p.key === 'arg1');
-        if (arg0 && arg1 && newVal !== undefined) {
+        if (arg0 && arg1 && unwrap(arg0.value) === keyMatch && newVal !== undefined) {
           arg1.value = newVal;
-          console.log(`→ Updated ${tr.name} ${arg0.value.replace(/{{|}}/g,'')} →`, newVal);
+          console.log(`→ Updated trigger filter ${keyMatch} →`, newVal);
         }
       }
       return f;
     });
   };
 
-  // Apply user inputs to all relevant triggers
+  // Apply user inputs to all relevant triggers (stable version)
   newContainer.containerVersion.trigger = (templateData.containerVersion.trigger || []).map(tr => {
-    switch (tr.name) {
-      case 'Home Page':
-      case 'Home Page - Windows+FF':
-        tr.filter = updateFilterParams(tr.filter, triggerHomeExclude);
-        break;
-      case 'Landing Pages - Windows+FF':
-        tr.filter = updateFilterParams(tr.filter, triggerLandingPath);
-        break;
-      case 'Click on Download - Main':
-        tr.filter = updateFilterParams(tr.filter, triggerClickMain);
-        break;
-      case 'Click on Download - Header - Windows+FF':
-        tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin);
-        break;
-      case 'Click on Download - Footer - Windows+FF':
-        tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin);
-        break;
-      // add other cases here if needed
+    if (tr.name === 'Home Page') {
+      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL');
+    }
+    if (tr.name === 'Home Page - Windows+FF') {
+      tr.filter = updateFilterParams(tr.filter, triggerHomeExclude, 'Page URL');
+    }
+    if (tr.name === 'Landing Pages - Windows+FF') {
+      tr.filter = updateFilterParams(tr.filter, triggerLandingPath, 'Page Path');
+    }
+    if (tr.name === 'Click on Download - Header - Windows+FF') {
+      tr.filter = updateFilterParams(tr.filter, triggerClickHeaderWin, 'eventAction');
+    }
+    if (tr.name === 'Click on Download - Footer - Windows+FF') {
+      tr.filter = updateFilterParams(tr.filter, triggerClickFooterWin, 'eventAction');
     }
     return tr;
   });
